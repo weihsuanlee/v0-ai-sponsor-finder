@@ -38,3 +38,12 @@ export interface PitchContent {
 }
 
 export type Language = "en" | "fr" | "de"
+
+export type SponsorStatus = "Not Contacted" | "Contacted" | "In Discussion" | "Rejected" | "Approved"
+
+export interface TrackedSponsor extends Sponsor {
+  id: string
+  status: SponsorStatus
+  dateAdded: string
+  clubData: ClubData
+}

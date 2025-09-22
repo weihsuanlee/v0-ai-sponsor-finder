@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { Users, Calendar, MapPin } from "lucide-react"
+import { MapPin, Users, Calendar, Scale } from "lucide-react"
 import type { ClubData } from "@/lib/types"
 
 interface DemographicsChartProps {
@@ -11,22 +11,30 @@ interface DemographicsChartProps {
 }
 
 export default function DemographicsChart({ clubData }: DemographicsChartProps) {
+  const chartColors = [
+    "oklch(0.5106 0.2301 276.9656)", // Primary purple
+    "oklch(0.7038 0.1230 182.5025)", // Secondary teal
+    "oklch(0.7686 0.1647 70.0804)", // Accent yellow
+    "oklch(0.7451 0.1372 342.5537)", // Chart pink
+    "oklch(0.6863 0.1686 142.4956)", // Chart green
+  ]
+
   // Transform club data into chart data
   const getAgeGroupData = () => {
     const ageGroupMap: Record<string, { name: string; value: number; color: string }> = {
-      youth: { name: "Youth (6-17)", value: 35, color: "hsl(var(--chart-1))" },
-      "young-adult": { name: "Young Adult (18-25)", value: 25, color: "hsl(var(--chart-2))" },
-      adult: { name: "Adult (26-40)", value: 30, color: "hsl(var(--chart-3))" },
-      senior: { name: "Senior (40+)", value: 10, color: "hsl(var(--chart-4))" },
-      mixed: { name: "Mixed Ages", value: 100, color: "hsl(var(--chart-1))" },
+      youth: { name: "Youth (6-17)", value: 35, color: chartColors[0] },
+      "young-adult": { name: "Young Adult (18-25)", value: 25, color: chartColors[1] },
+      adult: { name: "Adult (26-40)", value: 30, color: chartColors[2] },
+      senior: { name: "Senior (40+)", value: 10, color: chartColors[3] },
+      mixed: { name: "Mixed Ages", value: 100, color: chartColors[0] },
     }
 
     if (clubData.ageGroups === "mixed") {
       return [
-        { name: "Youth (6-17)", value: 25, color: "hsl(var(--chart-1))" },
-        { name: "Young Adult (18-25)", value: 30, color: "hsl(var(--chart-2))" },
-        { name: "Adult (26-40)", value: 35, color: "hsl(var(--chart-3))" },
-        { name: "Senior (40+)", value: 10, color: "hsl(var(--chart-4))" },
+        { name: "Youth (6-17)", value: 25, color: chartColors[0] },
+        { name: "Young Adult (18-25)", value: 30, color: chartColors[1] },
+        { name: "Adult (26-40)", value: 35, color: chartColors[2] },
+        { name: "Senior (40+)", value: 10, color: chartColors[3] },
       ]
     }
 
@@ -36,20 +44,20 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
   const getGenderData = () => {
     const genderMap: Record<string, Array<{ name: string; value: number; color: string }>> = {
       "male-majority": [
-        { name: "Male", value: 75, color: "hsl(var(--chart-1))" },
-        { name: "Female", value: 25, color: "hsl(var(--chart-2))" },
+        { name: "Male", value: 75, color: chartColors[0] }, // Purple for male
+        { name: "Female", value: 25, color: chartColors[1] }, // Teal for female
       ],
       "female-majority": [
-        { name: "Female", value: 75, color: "hsl(var(--chart-2))" },
-        { name: "Male", value: 25, color: "hsl(var(--chart-1))" },
+        { name: "Female", value: 75, color: chartColors[1] }, // Teal for female
+        { name: "Male", value: 25, color: chartColors[0] }, // Purple for male
       ],
       balanced: [
-        { name: "Male", value: 50, color: "hsl(var(--chart-1))" },
-        { name: "Female", value: 50, color: "hsl(var(--chart-2))" },
+        { name: "Male", value: 50, color: chartColors[0] }, // Purple for male
+        { name: "Female", value: 50, color: chartColors[1] }, // Teal for female
       ],
       mixed: [
-        { name: "Male", value: 55, color: "hsl(var(--chart-1))" },
-        { name: "Female", value: 45, color: "hsl(var(--chart-2))" },
+        { name: "Male", value: 55, color: chartColors[0] }, // Purple for male
+        { name: "Female", value: 45, color: chartColors[1] }, // Teal for female
       ],
     }
 
@@ -72,7 +80,7 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background border rounded-lg p-2 shadow-lg">
+        <div className="bg-background border rounded-lg p-3 shadow-lg border-primary/20">
           <p className="text-sm font-medium">{payload[0].name}</p>
           <p className="text-sm text-muted-foreground">{payload[0].value}%</p>
         </div>
@@ -82,10 +90,10 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
   }
 
   return (
-    <Card>
+    <Card className="border-2 border-primary/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5" />
+          <Users className="h-5 w-5 text-primary" />
           Club Demographics Overview
         </CardTitle>
       </CardHeader>
@@ -93,21 +101,21 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
         <div className="space-y-6">
           {/* Club Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
+            <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20">
               <div className="text-2xl font-bold text-primary">{clubData.totalMembers}</div>
               <div className="text-xs text-muted-foreground">Total Members</div>
             </div>
-            <div className="text-center">
-              <div className="text-lg font-semibold capitalize">{clubData.sportType}</div>
+            <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <div className="text-lg font-semibold capitalize text-primary">{clubData.sportType}</div>
               <div className="text-xs text-muted-foreground">Sport</div>
             </div>
-            <div className="text-center flex flex-col items-center">
+            <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20 flex flex-col items-center">
               <Badge className={getCompetitionLevelColor()}>{clubData.competitionLevel}</Badge>
               <div className="text-xs text-muted-foreground mt-1">Level</div>
             </div>
-            <div className="text-center">
+            <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20">
               <div className="flex items-center justify-center gap-1 text-sm">
-                <MapPin className="h-3 w-3" />
+                <MapPin className="h-3 w-3 text-primary" />
                 <span className="truncate">{clubData.location}</span>
               </div>
               <div className="text-xs text-muted-foreground">Location</div>
@@ -117,9 +125,9 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
           {/* Charts */}
           <div className="grid md:grid-cols-2 gap-6">
             {/* Age Groups Chart */}
-            <div>
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-4 rounded-lg border border-primary/10">
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-4 w-4 text-primary" />
                 Age Distribution
               </h4>
               <div className="h-48">
@@ -132,7 +140,7 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
                         cy="50%"
                         innerRadius={40}
                         outerRadius={80}
-                        paddingAngle={2}
+                        paddingAngle={4}
                         dataKey="value"
                       >
                         {ageGroupData.map((entry, index) => (
@@ -143,20 +151,26 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
                     </PieChart>
                   ) : (
                     <BarChart data={ageGroupData}>
-                      <CartesianGrid strokeDasharray="3 3" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.5106 0.2301 276.9656)" strokeOpacity={0.2} />
                       <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" fill={ageGroupData[0]?.color} />
+                      <Bar dataKey="value" fill={ageGroupData[0]?.color} radius={[4, 4, 0, 0]} />
                     </BarChart>
                   )}
                 </ResponsiveContainer>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-3">
                 {ageGroupData.map((item, index) => (
-                  <div key={index} className="flex items-center gap-1 text-xs">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span>
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 text-xs bg-background/80 px-2 py-1 rounded-full border"
+                  >
+                    <div
+                      className="w-3 h-3 rounded-full border border-white/50"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="font-medium">
                       {item.name}: {item.value}%
                     </span>
                   </div>
@@ -165,9 +179,9 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
             </div>
 
             {/* Gender Distribution Chart */}
-            <div>
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-4 rounded-lg border border-primary/10">
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <Users className="h-4 w-4" />
+                <Scale className="h-4 w-4 text-primary" />
                 Gender Distribution
               </h4>
               <div className="h-48">
@@ -179,7 +193,7 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
                       cy="50%"
                       innerRadius={40}
                       outerRadius={80}
-                      paddingAngle={2}
+                      paddingAngle={4}
                       dataKey="value"
                     >
                       {genderData.map((entry, index) => (
@@ -190,11 +204,17 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-3">
                 {genderData.map((item, index) => (
-                  <div key={index} className="flex items-center gap-1 text-xs">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span>
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 text-xs bg-background/80 px-2 py-1 rounded-full border"
+                  >
+                    <div
+                      className="w-3 h-3 rounded-full border border-white/50"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="font-medium">
                       {item.name}: {item.value}%
                     </span>
                   </div>
@@ -205,8 +225,11 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
 
           {/* Additional Info */}
           {clubData.additionalInfo && (
-            <div className="bg-muted/50 p-4 rounded-lg">
-              <h4 className="text-sm font-medium mb-2">Additional Club Information</h4>
+            <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-4 rounded-lg border border-primary/20">
+              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                <Users className="h-4 w-4 text-primary" />
+                Additional Club Information
+              </h4>
               <p className="text-sm text-muted-foreground">{clubData.additionalInfo}</p>
             </div>
           )}

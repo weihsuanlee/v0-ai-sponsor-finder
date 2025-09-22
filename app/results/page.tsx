@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowLeft, Building2, Users, TrendingUp } from "lucide-react"
+import { ArrowLeft, Target, BarChart3, Building2, Handshake } from "lucide-react"
 import Link from "next/link"
 import type { ClubData, SponsorsResponse } from "@/lib/types"
 import { generateSponsors } from "@/lib/api"
@@ -50,9 +50,12 @@ export default function ResultsPage() {
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <Card className="max-w-md w-full text-center p-8">
           <CardContent>
+            <div className="text-6xl mb-4">
+              <Target className="h-16 w-16 mx-auto text-muted-foreground" />
+            </div>
             <p className="text-destructive mb-4">{error}</p>
             <Link href="/">
-              <Button>
+              <Button className="cursor-pointer hover:bg-primary/90 transition-colors">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Home
               </Button>
@@ -70,14 +73,24 @@ export default function ResultsPage() {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <Link href="/" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2">
+              <Link
+                href="/"
+                className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2 cursor-pointer transition-colors"
+              >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Home
               </Link>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-3xl font-bold flex items-center gap-2">
+                <Target className="h-8 w-8 text-primary" />
                 {clubData ? `Sponsor Recommendations for ${clubData.clubName}` : "Sponsor Recommendations"}
               </h1>
             </div>
+            <Link href="/tracking">
+              <Button variant="outline" className="cursor-pointer hover:bg-accent transition-colors bg-transparent">
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Go to Tracking
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -88,10 +101,10 @@ export default function ResultsPage() {
             {/* Loading Demographics */}
             <Card>
               <CardHeader>
-                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-6 w-48 bg-gray-200" />
               </CardHeader>
               <CardContent>
-                <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-64 w-full bg-gray-200" />
               </CardContent>
             </Card>
 
@@ -100,12 +113,12 @@ export default function ResultsPage() {
               {[...Array(6)].map((_, i) => (
                 <Card key={i}>
                   <CardHeader>
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-6 w-32 bg-gray-200" />
+                    <Skeleton className="h-4 w-24 bg-gray-200" />
                   </CardHeader>
                   <CardContent>
-                    <Skeleton className="h-20 w-full mb-4" />
-                    <Skeleton className="h-32 w-full" />
+                    <Skeleton className="h-20 w-full mb-4 bg-gray-200" />
+                    <Skeleton className="h-32 w-full bg-gray-200" />
                   </CardContent>
                 </Card>
               ))}
@@ -120,10 +133,10 @@ export default function ResultsPage() {
                   <DemographicsChart clubData={clubData} />
                 </div>
                 <div className="space-y-4">
-                  <Card>
+                  <Card className="border-2 border-primary/20 bg-primary/5">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5" />
+                        <BarChart3 className="h-5 w-5 text-primary" />
                         Demographics Analysis
                       </CardTitle>
                     </CardHeader>
@@ -132,17 +145,17 @@ export default function ResultsPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-2 border-primary/20 bg-primary/5">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Building2 className="h-5 w-5" />
+                        <Building2 className="h-5 w-5 text-primary" />
                         Recommended Industries
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-wrap gap-2">
                         {sponsorsData.recommendedIndustries.map((industry, index) => (
-                          <Badge key={index} variant="secondary">
+                          <Badge key={index} variant="secondary" className="text-xs">
                             {industry}
                           </Badge>
                         ))}
@@ -157,9 +170,11 @@ export default function ResultsPage() {
             {sponsorsData && clubData && (
               <div>
                 <div className="flex items-center gap-2 mb-6">
-                  <Users className="h-6 w-6 text-primary" />
+                  <Handshake className="h-8 w-8 text-primary" />
                   <h2 className="text-2xl font-bold">Potential Sponsors</h2>
-                  <Badge variant="outline">{sponsorsData.sponsors.length} matches found</Badge>
+                  <Badge variant="outline" className="bg-primary/10">
+                    {sponsorsData.sponsors.length} matches found
+                  </Badge>
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-6">

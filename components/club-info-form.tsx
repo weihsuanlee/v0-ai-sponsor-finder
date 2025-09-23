@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowRight, Users, Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslation, type Language } from "@/lib/i18n"
+import { UserStorage } from "@/lib/user-storage"
 
 export interface ClubData {
   clubName: string
@@ -55,8 +56,7 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
     setIsLoading(true)
 
     try {
-      // Store form data and language in localStorage
-      localStorage.setItem("clubData", JSON.stringify(formData))
+      UserStorage.updateSession(formData)
       localStorage.setItem("selectedLanguage", language)
 
       // Navigate to results page

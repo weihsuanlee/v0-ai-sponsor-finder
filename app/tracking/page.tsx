@@ -27,6 +27,7 @@ import {
 import Link from "next/link"
 import type { Sponsor, ClubData } from "@/lib/types"
 import { generatePitchMaterials } from "@/lib/api"
+import { UserStorage } from "@/lib/user-storage"
 
 type SponsorStatus = "Not Contacted" | "Contacted" | "In Discussion" | "Rejected" | "Approved"
 
@@ -45,24 +46,20 @@ export default function TrackingPage() {
   const [mobileFilter, setMobileFilter] = useState<SponsorStatus | "All">("All")
 
   useEffect(() => {
-    const stored = localStorage.getItem("trackedSponsors")
-    if (stored) {
-      setTrackedSponsors(JSON.parse(stored))
-    }
+    const sponsors = UserStorage.getTrackedSponsors()
+    setTrackedSponsors(sponsors)
   }, [])
 
   const updateSponsorStatus = (sponsorId: string, newStatus: SponsorStatus) => {
-    const updated = trackedSponsors.map((sponsor) =>
-      sponsor.id === sponsorId ? { ...sponsor, status: newStatus } : sponsor,
-    )
+    UserStorage.updateSponsorStatus(sponsorId, newStatus)
+    const updated = UserStorage.getTrackedSponsors()
     setTrackedSponsors(updated)
-    localStorage.setItem("trackedSponsors", JSON.stringify(updated))
   }
 
   const removeSponsor = (sponsorId: string) => {
-    const updated = trackedSponsors.filter((sponsor) => sponsor.id !== sponsorId)
+    UserStorage.removeTrackedSponsor(sponsorId)
+    const updated = UserStorage.getTrackedSponsors()
     setTrackedSponsors(updated)
-    localStorage.setItem("trackedSponsors", JSON.stringify(updated))
   }
 
   const handleDragStart = (sponsor: TrackedSponsor) => {
@@ -161,8 +158,8 @@ export default function TrackingPage() {
                 Sponsor Tracking Board
               </h1>
               <p className="text-muted-foreground mt-1">
-                <span className="hidden md:inline">Drag and drop sponsors to update their status</span>
-                <span className="md:hidden">Manage your sponsor outreach pipeline</span>
+                <span className="hidden lg:inline">Drag and drop sponsors to update their status</span>
+                <span className="lg:hidden">Manage your sponsor outreach pipeline</span>
               </p>
             </div>
           </div>
@@ -190,8 +187,8 @@ export default function TrackingPage() {
           </Card>
         ) : (
           <div className="space-y-6">
-            {/* Pipeline Stats - Mobile Tab Bar */}
-            <div className="md:hidden">
+            {/* Pipeline Stats - Mobile/Tablet Tab Bar */}
+            <div className="lg:hidden">
               <div className="flex overflow-x-auto gap-2 pb-2">
                 <Button
                   variant={mobileFilter === "All" ? "default" : "outline"}
@@ -221,7 +218,7 @@ export default function TrackingPage() {
             </div>
 
             {/* Pipeline Stats - Desktop Cards */}
-            <div className="hidden md:grid md:grid-cols-5 gap-4">
+            <div className="hidden lg:grid lg:grid-cols-5 gap-4">
               {statusColumns.map(({ status, title, icon }) => {
                 const count = trackedSponsors.filter((s) => s.status === status).length
                 return (
@@ -237,7 +234,7 @@ export default function TrackingPage() {
             </div>
 
             {/* Desktop Kanban Board */}
-            <div className="hidden md:grid md:grid-cols-5 gap-4">
+            <div className="hidden lg:grid lg:grid-cols-5 gap-4">
               {statusColumns.map(({ status, title, icon }) => (
                 <div
                   key={status}
@@ -319,9 +316,6 @@ export default function TrackingPage() {
                                         <div className="space-y-2 text-sm">
                                           <div>
                                             <strong>Industry:</strong> {sponsor.industry}
-                                          </div>
-                                          <div>
-                                            <strong>Budget:</strong> {sponsor.sponsorshipBudget}
                                           </div>
                                           <div>
                                             <strong>Target Audience:</strong> {sponsor.targetAudience}
@@ -466,8 +460,8 @@ export default function TrackingPage() {
               ))}
             </div>
 
-            {/* Mobile List View */}
-            <div className="md:hidden space-y-4">
+            {/* Mobile/Tablet List View */}
+            <div className="lg:hidden space-y-4">
               {mobileFilter !== "All" && (
                 <div className="text-sm text-muted-foreground text-center py-2">
                   Showing {filteredSponsors.length} sponsors with status: <strong>{mobileFilter}</strong>
@@ -554,9 +548,6 @@ export default function TrackingPage() {
                                   <div className="space-y-2 text-sm">
                                     <div>
                                       <strong>Industry:</strong> {sponsor.industry}
-                                    </div>
-                                    <div>
-                                      <strong>Budget:</strong> {sponsor.sponsorshipBudget}
                                     </div>
                                     <div>
                                       <strong>Target Audience:</strong> {sponsor.targetAudience}

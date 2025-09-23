@@ -47,3 +47,16 @@ export interface TrackedSponsor extends Sponsor {
   dateAdded: string
   clubData: ClubData
 }
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  createdAt: string
+}
+
+export interface UserSession {
+  userId: string
+  clubData?: ClubData
+  createdAt: string
+}

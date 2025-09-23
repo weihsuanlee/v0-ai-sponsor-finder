@@ -11,6 +11,7 @@ import type { ClubData, SponsorsResponse } from "@/lib/types"
 import { generateSponsors } from "@/lib/api"
 import SponsorCard from "@/components/sponsor-card"
 import DemographicsChart from "@/components/demographics-chart"
+import { UserStorage } from "@/lib/user-storage"
 
 export default function ResultsPage() {
   const [clubData, setClubData] = useState<ClubData | null>(null)
@@ -21,18 +22,16 @@ export default function ResultsPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Get club data from localStorage
-        const storedClubData = localStorage.getItem("clubData")
+        const storedClubData = UserStorage.getClubData()
         if (!storedClubData) {
           setError("No club data found. Please fill out the form first.")
           return
         }
 
-        const parsedClubData: ClubData = JSON.parse(storedClubData)
-        setClubData(parsedClubData)
+        setClubData(storedClubData)
 
         // Generate sponsors using AI
-        const sponsors = await generateSponsors(parsedClubData)
+        const sponsors = await generateSponsors(storedClubData)
         setSponsorsData(sponsors)
       } catch (err) {
         console.error("Error loading data:", err)

@@ -1,18 +1,46 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Target, Zap, Globe, BarChart3, Bot } from "lucide-react"
 import ClubInfoForm from "@/components/club-info-form"
 import LanguageSelector from "@/components/language-selector"
+import UserSetup from "@/components/user-setup"
 import { useTranslation, type Language } from "@/lib/i18n"
+import { UserStorage } from "@/lib/user-storage"
 import Link from "next/link"
 
 export default function HomePage() {
   const [language, setLanguage] = useState<Language>("en")
+  const [currentUser, setCurrentUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const { t } = useTranslation(language)
+
+  useEffect(() => {
+    // Check if user exists
+    const user = UserStorage.getCurrentUser()
+    setCurrentUser(user)
+    setIsLoading(false)
+  }, [])
+
+  const handleUserCreated = () => {
+    const user = UserStorage.getCurrentUser()
+    setCurrentUser(user)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  if (!currentUser) {
+    return <UserSetup onUserCreated={handleUserCreated} />
+  }
 
   return (
     <div className="min-h-screen bg-background">

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -37,6 +37,7 @@ import {
 } from "lucide-react"
 import type { Sponsor, ClubData, PitchContent, Language } from "@/lib/types"
 import { generatePitch } from "@/lib/api"
+import { UserStorage } from "@/lib/user-storage"
 
 interface SponsorCardProps {
   sponsor: Sponsor
@@ -49,6 +50,11 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
   const [selectedLanguage, setSelectedLanguage] = useState<Language>("en")
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [isTracked, setIsTracked] = useState(false)
+
+  useEffect(() => {
+    const tracked = UserStorage.isSponsorTracked(sponsor.name)
+    setIsTracked(tracked)
+  }, [sponsor.name])
 
   const handleGeneratePitch = async (language: Language = "en") => {
     setIsGeneratingPitch(true)
@@ -74,7 +80,8 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
   }
 
   const handleTrackSponsor = () => {
-    const trackedSponsors = JSON.parse(localStorage.getItem("trackedSponsors") || "[]")
+    if (isTracked) return
+
     const sponsorWithStatus = {
       ...sponsor,
       id: `${sponsor.name}-${Date.now()}`,
@@ -83,9 +90,8 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
       clubData: clubData,
     }
 
-    if (!isTracked) {
-      trackedSponsors.push(sponsorWithStatus)
-      localStorage.setItem("trackedSponsors", JSON.stringify(trackedSponsors))
+    const success = UserStorage.addTrackedSponsor(sponsorWithStatus)
+    if (success) {
       setIsTracked(true)
     }
   }
@@ -152,18 +158,19 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs">
-              {sponsor.sponsorshipBudget}
-            </Badge>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleTrackSponsor}
-              className="h-8 w-8 p-0 cursor-pointer hover:bg-accent transition-colors"
+              className={`h-8 w-8 p-0 transition-colors ${
+                isTracked ? "cursor-default text-primary" : "cursor-pointer hover:bg-accent"
+              }`}
               disabled={isTracked}
+              title={isTracked ? "Already added to tracking" : "Add to tracking"}
             >
               {isTracked ? <BookmarkCheck className="h-4 w-4 text-primary" /> : <Bookmark className="h-4 w-4" />}
             </Button>
+            {isTracked && <span className="text-xs text-primary font-medium">Added</span>}
           </div>
         </div>
       </CardHeader>
@@ -290,6 +297,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
               {/* Email Subject */}
               <div>
                 <div className="flex items-center justify-between mb-1">
+                  {/* Label component is used here */}
                   <Label className="text-xs font-medium flex items-center gap-1">
                     <Mail className="h-3 w-3" />
                     Email Subject
@@ -309,6 +317,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
               {/* Email Body */}
               <div>
                 <div className="flex items-center justify-between mb-1">
+                  {/* Label component is used here */}
                   <Label className="text-xs font-medium flex items-center gap-1">
                     <Mail className="h-3 w-3" />
                     Email Body
@@ -328,6 +337,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
               {/* Slogan */}
               <div>
                 <div className="flex items-center justify-between mb-1">
+                  {/* Label component is used here */}
                   <Label className="text-xs font-medium flex items-center gap-1">
                     <Target className="h-3 w-3" />
                     Partnership Slogan
@@ -348,6 +358,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
 
               {/* Key Benefits */}
               <div>
+                {/* Label component is used here */}
                 <Label className="text-xs font-medium flex items-center gap-1">
                   <CheckSquare className="h-3 w-3" />
                   Key Benefits for Sponsor
@@ -364,6 +375,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
 
               {/* Collaboration Ideas */}
               <div>
+                {/* Label component is used here */}
                 <Label className="text-xs font-medium flex items-center gap-1">
                   <Rocket className="h-3 w-3" />
                   Collaboration Ideas
@@ -380,6 +392,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
 
               {/* Call to Action */}
               <div className="bg-secondary/5 p-3 rounded-lg border border-secondary/20">
+                {/* Label component is used here */}
                 <Label className="text-xs font-medium text-secondary flex items-center gap-1">
                   <Phone className="h-3 w-3" />
                   Call to Action

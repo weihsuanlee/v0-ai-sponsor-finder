@@ -70,31 +70,26 @@ export default function ResultsPage() {
       {/* Header */}
       <header className="border-b bg-card/50">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <div>
               <Link
                 href="/"
                 className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2 cursor-pointer transition-colors"
               >
-                <ArrowLeft className="mr-2 h-4 w-4 flex-shrink-0" />
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Home
               </Link>
-              <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-balance">
-                <Target className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+              <h1 className="text-3xl font-bold flex items-center gap-2">
+                <Target className="h-8 w-8 text-primary" />
                 {clubData ? `Sponsor Recommendations for ${clubData.clubName}` : "Sponsor Recommendations"}
               </h1>
             </div>
-            <div className="flex-shrink-0">
-              <Link href="/tracking">
-                <Button
-                  variant="outline"
-                  className="cursor-pointer hover:bg-accent transition-colors bg-transparent w-full sm:w-auto"
-                >
-                  <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0" />
-                  Go to Tracking
-                </Button>
-              </Link>
-            </div>
+            <Link href="/tracking">
+              <Button variant="outline" className="cursor-pointer hover:bg-accent transition-colors bg-transparent">
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Go to Tracking
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

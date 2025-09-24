@@ -62,6 +62,49 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(object)
   } catch (error) {
     console.error("Error generating pitch:", error)
-    return NextResponse.json({ error: "Failed to generate pitch content" }, { status: 500 })
+
+    if (error instanceof Error) {
+      // Check for OpenAI quota exceeded error
+      if (error.message.includes("exceeded your current quota")) {
+        return NextResponse.json(
+          {
+            error: "API quota exceeded. Please check your OpenAI billing and usage limits.",
+            errorType: "quota_exceeded",
+          },
+          { status: 429 },
+        )
+      }
+
+      // Check for rate limiting
+      if (error.message.includes("rate limit")) {
+        return NextResponse.json(
+          {
+            error: "Rate limit exceeded. Please wait a moment and try again.",
+            errorType: "rate_limit",
+          },
+          { status: 429 },
+        )
+      }
+
+      // Check for authentication errors
+      if (error.message.includes("authentication") || error.message.includes("API key")) {
+        return NextResponse.json(
+          {
+            error: "API authentication failed. Please check your OpenAI API key configuration.",
+            errorType: "auth_error",
+          },
+          { status: 401 },
+        )
+      }
+    }
+
+    // Generic error fallback
+    return NextResponse.json(
+      {
+        error: "Failed to generate pitch content. Please try again later.",
+        errorType: "generic_error",
+      },
+      { status: 500 },
+    )
   }
 }

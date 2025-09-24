@@ -10,9 +10,7 @@ export async function generateSponsors(clubData: ClubData): Promise<SponsorsResp
   })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    const errorMessage = errorData.error || "Failed to generate sponsors"
-    throw new Error(errorMessage)
+    throw new Error("Failed to generate sponsors")
   }
 
   return response.json()
@@ -32,14 +30,7 @@ export async function generatePitch(
   })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    const errorMessage = errorData.error || "Failed to generate pitch"
-    const errorType = errorData.errorType || "generic_error"
-
-    // Create a more descriptive error with type information
-    const error = new Error(errorMessage) as Error & { type?: string }
-    error.type = errorType
-    throw error
+    throw new Error("Failed to generate pitch")
   }
 
   return response.json()

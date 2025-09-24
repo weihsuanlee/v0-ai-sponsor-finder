@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 function generateMockSponsors(clubData: any) {
-  const sponsors = [
+  const baseSponsors = [
     {
       name: `${clubData.location} Sports Equipment Co.`,
       industry: "Sports Equipment",
@@ -78,6 +78,56 @@ function generateMockSponsors(clubData: any) {
     },
   ]
 
+  const sportSpecificSponsors = {
+    basketball: [
+      {
+        name: "Court Kings Equipment",
+        industry: "Sports Equipment",
+        description: "Specialized basketball equipment and court accessories supplier.",
+        targetAudience: "Basketball players and teams",
+        sponsorshipBudget: "€3,000 - €6,000",
+        contactInfo: {
+          website: "www.courtkings.com",
+          email: "team@courtkings.com",
+        },
+        matchReason: "Dedicated to supporting basketball communities with high-quality equipment and gear.",
+      },
+    ],
+    tennis: [
+      {
+        name: "Racquet Masters",
+        industry: "Sports Equipment",
+        description: "Premium tennis equipment and accessories retailer.",
+        targetAudience: "Tennis players and clubs",
+        sponsorshipBudget: "€2,500 - €5,500",
+        contactInfo: {
+          website: "www.racquetmasters.com",
+          email: "clubs@racquetmasters.com",
+        },
+        matchReason: "Specializes in tennis equipment and has a strong track record of supporting tennis clubs.",
+      },
+    ],
+    football: [
+      {
+        name: "Goal Line Sports",
+        industry: "Sports Equipment",
+        description: "Football equipment and training gear specialist.",
+        targetAudience: "Football teams and players",
+        sponsorshipBudget: "€4,000 - €8,000",
+        contactInfo: {
+          website: "www.goallinesports.com",
+          email: "teams@goallinesports.com",
+        },
+        matchReason: "Passionate about supporting football clubs with top-quality equipment and training resources.",
+      },
+    ],
+  }
+
+  const sportType = clubData.sportType?.toLowerCase()
+  const additionalSponsors = sportSpecificSponsors[sportType as keyof typeof sportSpecificSponsors] || []
+
+  const allSponsors = [...baseSponsors, ...additionalSponsors]
+
   const demographicsAnalysis = `Your ${clubData.sportType} club in ${clubData.location} with ${clubData.totalMembers} members represents an attractive sponsorship opportunity. The ${clubData.ageGroups} age demographic and ${clubData.genderSplit} gender distribution appeals to brands targeting active, health-conscious consumers. The ${clubData.competitionLevel} competition level indicates dedicated athletes who influence purchasing decisions in sports and lifestyle categories.`
 
   const recommendedIndustries = [
@@ -92,7 +142,7 @@ function generateMockSponsors(clubData: any) {
   ]
 
   return {
-    sponsors,
+    sponsors: allSponsors,
     demographicsAnalysis,
     recommendedIndustries,
   }

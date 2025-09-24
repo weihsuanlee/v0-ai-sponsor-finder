@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   Copy,
   Globe,
@@ -35,7 +34,6 @@ import {
   Phone,
   Sparkles,
   RefreshCw,
-  AlertTriangle,
 } from "lucide-react"
 import type { Sponsor, ClubData, PitchContent, Language } from "@/lib/types"
 import { generatePitch } from "@/lib/api"
@@ -64,33 +62,14 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
     setPitchError(null)
 
     try {
+      console.log("[v0] Starting pitch generation for:", sponsor.name)
       const pitch = await generatePitch(clubData, sponsor, language)
+      console.log("[v0] Pitch generated successfully")
       setPitchContent(pitch)
       setSelectedLanguage(language)
-    } catch (error) {
-      console.error("Error generating pitch:", error)
-
-      if (error instanceof Error) {
-        const errorWithType = error as Error & { type?: string }
-
-        switch (errorWithType.type) {
-          case "quota_exceeded":
-            setPitchError(
-              "OpenAI API quota exceeded. Please check your billing and usage limits in your OpenAI dashboard.",
-            )
-            break
-          case "rate_limit":
-            setPitchError("Rate limit exceeded. Please wait a moment and try again.")
-            break
-          case "auth_error":
-            setPitchError("API authentication failed. Please check your OpenAI API key configuration.")
-            break
-          default:
-            setPitchError(error.message || "Failed to generate pitch content. Please try again later.")
-        }
-      } else {
-        setPitchError("An unexpected error occurred. Please try again later.")
-      }
+    } catch (error: any) {
+      console.error("[v0] Error generating pitch:", error)
+      setPitchError("Unable to generate pitch materials at the moment. Please try again later.")
     } finally {
       setIsGeneratingPitch(false)
     }
@@ -286,23 +265,23 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
             </Select>
           </div>
 
-          {pitchError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription className="text-sm">{pitchError}</AlertDescription>
-            </Alert>
-          )}
-
           {!pitchContent && !isGeneratingPitch && (
-            <Button
-              onClick={() => handleGeneratePitch(selectedLanguage)}
-              variant="outline"
-              size="sm"
-              className="w-full cursor-pointer hover:bg-accent transition-colors"
-            >
-              <Sparkles className="h-4 w-4 mr-2" />
-              Generate Pitch Materials
-            </Button>
+            <div>
+              <Button
+                onClick={() => handleGeneratePitch(selectedLanguage)}
+                variant="outline"
+                size="sm"
+                className="w-full cursor-pointer hover:bg-accent transition-colors"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Generate Pitch Materials
+              </Button>
+              {pitchError && (
+                <div className="mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded text-sm text-destructive">
+                  {pitchError}
+                </div>
+              )}
+            </div>
           )}
 
           {isGeneratingPitch && (
@@ -331,6 +310,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
               {/* Email Subject */}
               <div>
                 <div className="flex items-center justify-between mb-1">
+                  {/* Label component is used here */}
                   <Label className="text-xs font-medium flex items-center gap-1">
                     <Mail className="h-3 w-3" />
                     Email Subject
@@ -350,6 +330,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
               {/* Email Body */}
               <div>
                 <div className="flex items-center justify-between mb-1">
+                  {/* Label component is used here */}
                   <Label className="text-xs font-medium flex items-center gap-1">
                     <Mail className="h-3 w-3" />
                     Email Body
@@ -369,6 +350,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
               {/* Slogan */}
               <div>
                 <div className="flex items-center justify-between mb-1">
+                  {/* Label component is used here */}
                   <Label className="text-xs font-medium flex items-center gap-1">
                     <Target className="h-3 w-3" />
                     Partnership Slogan
@@ -389,6 +371,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
 
               {/* Key Benefits */}
               <div>
+                {/* Label component is used here */}
                 <Label className="text-xs font-medium flex items-center gap-1">
                   <CheckSquare className="h-3 w-3" />
                   Key Benefits for Sponsor
@@ -405,6 +388,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
 
               {/* Collaboration Ideas */}
               <div>
+                {/* Label component is used here */}
                 <Label className="text-xs font-medium flex items-center gap-1">
                   <Rocket className="h-3 w-3" />
                   Collaboration Ideas
@@ -421,6 +405,7 @@ export default function SponsorCard({ sponsor, clubData }: SponsorCardProps) {
 
               {/* Call to Action */}
               <div className="bg-secondary/5 p-3 rounded-lg border border-secondary/20">
+                {/* Label component is used here */}
                 <Label className="text-xs font-medium text-secondary flex items-center gap-1">
                   <Phone className="h-3 w-3" />
                   Call to Action

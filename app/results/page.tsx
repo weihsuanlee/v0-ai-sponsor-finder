@@ -176,9 +176,11 @@ export default function ResultsPage() {
                   </Badge>
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-6">
+                <div className="masonry-container">
                   {sponsorsData.sponsors.map((sponsor, index) => (
-                    <SponsorCard key={index} sponsor={sponsor} clubData={clubData} />
+                    <div key={index} className="masonry-item">
+                      <SponsorCard sponsor={sponsor} clubData={clubData} />
+                    </div>
                   ))}
                 </div>
               </div>

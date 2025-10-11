@@ -7,6 +7,31 @@ export interface ClubData {
   genderSplit: string
   competitionLevel: string
   additionalInfo: string
+  // Optional detailed demographics from uploaded file
+  uploadedDemographics?: {
+    ageDistribution: {
+      youth: number
+      youngAdult: number
+      adult: number
+      senior: number
+    }
+    ageDistributionPercentages: {
+      youth: number
+      youngAdult: number
+      adult: number
+      senior: number
+    }
+    genderDistribution: {
+      male: number
+      female: number
+      other: number
+    }
+    genderDistributionPercentages: {
+      male: number
+      female: number
+      other: number
+    }
+  }
 }
 
 export interface Sponsor {

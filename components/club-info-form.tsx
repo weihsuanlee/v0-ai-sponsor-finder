@@ -48,6 +48,7 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [uploadedData, setUploadedData] = useState<ParsedMemberData | null>(null)
   const [useFileUpload, setUseFileUpload] = useState(false)
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
 
   const handleInputChange = (field: keyof ClubData, value: string | number) => {
     setFormData((prev) => ({
@@ -58,12 +59,18 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
 
   const handleFileDataParsed = (data: ParsedMemberData) => {
     setUploadedData(data)
-    // Auto-fill form fields from uploaded data
+    // Auto-fill form fields from uploaded data and save demographics
     setFormData((prev) => ({
       ...prev,
       totalMembers: data.totalMembers,
       ageGroups: data.dominantAgeGroup,
       genderSplit: data.dominantGender,
+      uploadedDemographics: {
+        ageDistribution: data.ageDistribution,
+        ageDistributionPercentages: data.ageDistributionPercentages,
+        genderDistribution: data.genderDistribution,
+        genderDistributionPercentages: data.genderDistributionPercentages,
+      },
     }))
   }
 
@@ -79,8 +86,46 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
     }))
   }
 
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {}
+
+    if (!formData.clubName.trim()) {
+      errors.clubName = "Club name is required"
+    }
+    if (!formData.sportType) {
+      errors.sportType = "Sport type is required"
+    }
+    if (!formData.location.trim()) {
+      errors.location = "Location is required"
+    }
+    if (!formData.totalMembers || formData.totalMembers <= 0) {
+      errors.totalMembers = "Total members must be greater than 0"
+    }
+
+    setValidationErrors(errors)
+
+    // Scroll to first error
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(errors)[0]
+      const element = document.getElementById(firstErrorField)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        element.focus()
+      }
+      return false
+    }
+
+    return true
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate form
+    if (!validateForm()) {
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -110,13 +155,16 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
               placeholder="e.g., Manchester United FC"
               value={formData.clubName}
               onChange={(e) => handleInputChange("clubName", e.target.value)}
-              required
+              className={validationErrors.clubName ? "border-red-500" : ""}
             />
+            {validationErrors.clubName && (
+              <p className="text-sm text-red-600">{validationErrors.clubName}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="sportType">{t("sportType")} *</Label>
             <Select value={formData.sportType} onValueChange={(value) => handleInputChange("sportType", value)}>
-              <SelectTrigger>
+              <SelectTrigger id="sportType" className={validationErrors.sportType ? "border-red-500" : ""}>
                 <SelectValue placeholder={t("sportType")} />
               </SelectTrigger>
               <SelectContent>
@@ -133,6 +181,9 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
                 <SelectItem value="other">{t("other")}</SelectItem>
               </SelectContent>
             </Select>
+            {validationErrors.sportType && (
+              <p className="text-sm text-red-600">{validationErrors.sportType}</p>
+            )}
           </div>
         </div>
 
@@ -144,8 +195,11 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
               placeholder="e.g., Manchester, UK"
               value={formData.location}
               onChange={(e) => handleInputChange("location", e.target.value)}
-              required
+              className={validationErrors.location ? "border-red-500" : ""}
             />
+            {validationErrors.location && (
+              <p className="text-sm text-red-600">{validationErrors.location}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="totalMembers">{t("totalMembers")} *</Label>
@@ -155,8 +209,11 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
               placeholder="e.g., 150"
               value={formData.totalMembers || ""}
               onChange={(e) => handleInputChange("totalMembers", Number.parseInt(e.target.value) || 0)}
-              required
+              className={validationErrors.totalMembers ? "border-red-500" : ""}
             />
+            {validationErrors.totalMembers && (
+              <p className="text-sm text-red-600">{validationErrors.totalMembers}</p>
+            )}
           </div>
         </div>
 
@@ -312,7 +369,7 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
 
         {/* Submit Button */}
         <div className="text-center pt-6">
-          <Button type="submit" size="lg" className="text-lg px-12" disabled={!isFormValid || isLoading}>
+          <Button type="submit" size="lg" className="text-lg px-12" disabled={isLoading}>
             {isLoading ? "Finding Sponsors..." : t("findSponsors")}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>

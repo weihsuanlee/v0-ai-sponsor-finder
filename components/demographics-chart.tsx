@@ -21,6 +21,18 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
 
   // Transform club data into chart data
   const getAgeGroupData = () => {
+    // If uploaded demographics are available, use exact data
+    if (clubData.uploadedDemographics) {
+      const { ageDistributionPercentages } = clubData.uploadedDemographics
+      return [
+        { name: "Youth (6-17)", value: ageDistributionPercentages.youth, color: chartColors[0] },
+        { name: "Young Adult (18-25)", value: ageDistributionPercentages.youngAdult, color: chartColors[1] },
+        { name: "Adult (26-40)", value: ageDistributionPercentages.adult, color: chartColors[2] },
+        { name: "Senior (40+)", value: ageDistributionPercentages.senior, color: chartColors[3] },
+      ].filter((item) => item.value > 0) // Only show groups with members
+    }
+
+    // Fallback to estimated data
     const ageGroupMap: Record<string, { name: string; value: number; color: string }> = {
       youth: { name: "Youth (6-17)", value: 35, color: chartColors[0] },
       "young-adult": { name: "Young Adult (18-25)", value: 25, color: chartColors[1] },
@@ -42,6 +54,17 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
   }
 
   const getGenderData = () => {
+    // If uploaded demographics are available, use exact data
+    if (clubData.uploadedDemographics) {
+      const { genderDistributionPercentages } = clubData.uploadedDemographics
+      return [
+        { name: "Male", value: genderDistributionPercentages.male, color: chartColors[0] },
+        { name: "Female", value: genderDistributionPercentages.female, color: chartColors[1] },
+        { name: "Other", value: genderDistributionPercentages.other, color: chartColors[4] },
+      ].filter((item) => item.value > 0) // Only show categories with members
+    }
+
+    // Fallback to estimated data
     const genderMap: Record<string, Array<{ name: string; value: number; color: string }>> = {
       "male-majority": [
         { name: "Male", value: 75, color: chartColors[0] }, // Purple for male

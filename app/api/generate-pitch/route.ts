@@ -13,6 +13,18 @@ const PitchContentSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  // Check if OpenAI API key is configured
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("[OpenAI] API key is not configured")
+    return NextResponse.json(
+      {
+        error: "OpenAI API key is not configured. Please set OPENAI_API_KEY in your environment variables.",
+        details: "Contact your administrator to configure the API key in Vercel environment settings.",
+      },
+      { status: 500 }
+    )
+  }
+
   try {
     const { clubData, sponsor, language = "en" } = await request.json()
 
@@ -61,7 +73,26 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(object)
   } catch (error) {
-    console.error("Error generating pitch:", error)
-    return NextResponse.json({ error: "Failed to generate pitch content" }, { status: 500 })
+    console.error("[OpenAI] Error generating pitch:", error)
+
+    // Check if it's an API key error
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    if (errorMessage.includes("API key") || errorMessage.includes("authentication")) {
+      return NextResponse.json(
+        {
+          error: "OpenAI authentication failed",
+          details: "Please verify that your OPENAI_API_KEY is valid and has sufficient credits.",
+        },
+        { status: 401 }
+      )
+    }
+
+    return NextResponse.json(
+      {
+        error: "Failed to generate pitch content",
+        details: errorMessage
+      },
+      { status: 500 }
+    )
   }
 }

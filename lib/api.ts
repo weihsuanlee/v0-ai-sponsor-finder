@@ -45,7 +45,7 @@ export async function generatePitchMaterials(
   pitchEmail: string
   talkingPoints: string[]
 }> {
-  const response = await fetch("/api/generate-pitch-materials", {
+  const response = await fetch("/api/generate-pitch", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -54,8 +54,15 @@ export async function generatePitchMaterials(
   })
 
   if (!response.ok) {
-    throw new Error("Failed to generate pitch materials")
+    const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
+    throw new Error(errorData.error || "Failed to generate pitch materials")
   }
 
-  return response.json()
+  // Transform the response to match expected format
+  const data = await response.json()
+  return {
+    emailSubject: data.emailSubject,
+    pitchEmail: data.emailBody,
+    talkingPoints: data.keyBenefits || [],
+  }
 }

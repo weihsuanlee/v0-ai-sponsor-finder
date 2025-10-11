@@ -4,15 +4,18 @@ import type React from "react"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowRight, Users, Upload } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight, Users, Upload, FileSpreadsheet, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslation, type Language } from "@/lib/i18n"
 import { UserStorage } from "@/lib/user-storage"
+import FileUpload from "@/components/file-upload"
+import type { ParsedMemberData } from "@/lib/types"
 
 export interface ClubData {
   clubName: string
@@ -43,11 +46,36 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
     additionalInfo: "",
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [uploadedData, setUploadedData] = useState<ParsedMemberData | null>(null)
+  const [useFileUpload, setUseFileUpload] = useState(false)
 
   const handleInputChange = (field: keyof ClubData, value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }))
+  }
+
+  const handleFileDataParsed = (data: ParsedMemberData) => {
+    setUploadedData(data)
+    // Auto-fill form fields from uploaded data
+    setFormData((prev) => ({
+      ...prev,
+      totalMembers: data.totalMembers,
+      ageGroups: data.dominantAgeGroup,
+      genderSplit: data.dominantGender,
+    }))
+  }
+
+  const handleClearUpload = () => {
+    setUploadedData(null)
+    setUseFileUpload(false)
+    // Clear auto-filled fields
+    setFormData((prev) => ({
+      ...prev,
+      totalMembers: 0,
+      ageGroups: "",
+      genderSplit: "",
     }))
   }
 
@@ -199,16 +227,75 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
             <div className="flex-1 h-px bg-border"></div>
           </div>
 
-          <div className="text-center p-6 border-2 border-dashed border-border rounded-lg">
-            <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground mb-2">Upload member data file (CSV, Excel)</p>
-            <p className="text-xs text-muted-foreground">
-              We'll automatically extract demographics while keeping sensitive data private
-            </p>
-            <Button variant="outline" size="sm" className="mt-3 bg-transparent" type="button">
-              Choose File
-            </Button>
-          </div>
+          {!useFileUpload ? (
+            <div className="text-center p-6 border-2 border-dashed border-border rounded-lg hover:border-primary/50 transition-colors">
+              <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground mb-2">Upload member data file (CSV, Excel)</p>
+              <p className="text-xs text-muted-foreground mb-4">
+                We'll automatically extract demographics while keeping sensitive data private
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-3 bg-transparent"
+                type="button"
+                onClick={() => setUseFileUpload(true)}
+              >
+                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                Choose File
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <FileUpload onDataParsed={handleFileDataParsed} onClear={handleClearUpload} />
+
+              {uploadedData && (
+                <Card className="border-green-500 bg-green-50/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                      <div className="flex-1 space-y-3">
+                        <div>
+                          <p className="font-medium text-sm">Member data parsed successfully!</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {uploadedData.totalMembers} members analyzed. Form fields have been auto-filled.
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                          <div>
+                            <p className="font-medium text-muted-foreground">Age Distribution</p>
+                            <div className="mt-1 space-y-0.5">
+                              <p>Youth (6-17): {uploadedData.ageDistributionPercentages.youth}%</p>
+                              <p>Young Adult (18-25): {uploadedData.ageDistributionPercentages.youngAdult}%</p>
+                              <p>Adult (26-40): {uploadedData.ageDistributionPercentages.adult}%</p>
+                              <p>Senior (40+): {uploadedData.ageDistributionPercentages.senior}%</p>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="font-medium text-muted-foreground">Gender Distribution</p>
+                            <div className="mt-1 space-y-0.5">
+                              <p>Male: {uploadedData.genderDistributionPercentages.male}%</p>
+                              <p>Female: {uploadedData.genderDistributionPercentages.female}%</p>
+                              <p>Other: {uploadedData.genderDistributionPercentages.other}%</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t">
+                          <Badge variant="secondary" className="text-xs">
+                            <FileSpreadsheet className="mr-1 h-3 w-3" />
+                            You can still manually adjust the fields below
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Additional Info */}

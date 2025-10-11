@@ -16,6 +16,7 @@ AI Sponsor Finder is a Next.js application that helps sports clubs find and conn
 **Key Features:**
 - AI-powered sponsor matching based on club demographics
 - Multi-language support (en/fr/de) for all content and pitch materials
+- **CSV/Excel file upload** - Upload member data files to automatically extract demographics
 - Kanban-style tracking board for sponsor outreach pipeline
 - AI-generated pitch materials (emails, slogans, collaboration ideas)
 - User management with localStorage-based sessions
@@ -99,8 +100,20 @@ All state is managed via `UserStorage` class (`lib/user-storage.ts`).
 - Output: `PitchContent` with emailSubject, emailBody, slogan, collaborationIdeas, keyBenefits, callToAction
 - Uses OpenAI `gpt-4o-mini` via AI SDK's `generateObject` with Zod schema validation
 - Requires `OPENAI_API_KEY` environment variable
+- **Enhanced:** Now includes API key validation and detailed error messages
 
-**Note:** There's a mismatch - tracking page calls `/api/generate-pitch-materials` but it doesn't exist. The existing endpoint is `/api/generate-pitch`.
+**`/api/upload-members` (POST)** - NEW
+- Input: FormData with file (CSV or Excel)
+- Output: `FileUploadResponse` with parsed member data and preview
+- Accepts .csv, .xlsx, .xls files (max 5MB)
+- Parses demographics: age distribution, gender split, total members
+- Returns structured data for auto-filling form fields
+- Uses `papaparse` for CSV and `xlsx` for Excel parsing
+
+**`/api/health` (GET)** - NEW
+- Health check endpoint to validate API configuration
+- Returns OpenAI API key status (configured/not configured) without exposing the key
+- Useful for debugging deployment issues
 
 ### Type System
 
@@ -178,15 +191,48 @@ Use browser DevTools → Application → Local Storage to inspect:
 
 Clear data: `UserStorage.clearUserData()` in console or manually delete keys.
 
+## CSV/Excel Upload Feature
+
+The application now supports uploading member data files to automatically extract demographics:
+
+### Supported File Formats:
+- CSV (.csv)
+- Excel (.xlsx, .xls)
+- Maximum file size: 5MB
+
+### Expected File Structure:
+Files should contain columns with member information. The parser supports flexible column names:
+- **Age data**: `age`, `Age`, `AGE`, `date_of_birth`, `dateOfBirth`, `dob`, `DOB`, `birthdate`
+- **Gender data**: `gender`, `Gender`, `GENDER`, `sex`, `Sex`
+
+### How It Works:
+1. User clicks "Choose File" in the form
+2. File is uploaded to `/api/upload-members`
+3. Server parses the file using `papaparse` (CSV) or `xlsx` (Excel)
+4. Demographics are extracted using `lib/member-data-parser.ts`:
+   - Age distribution calculated and categorized (youth, young adult, adult, senior)
+   - Gender distribution calculated (male, female, other)
+   - Dominant age group and gender determined
+5. Form fields auto-populate with parsed data
+6. User can manually adjust any auto-filled values
+7. Submit form as normal
+
+### Parser Logic (`lib/member-data-parser.ts`):
+- Flexible column name matching (case-insensitive, handles underscores/spaces)
+- Age calculated from DOB if age column not present
+- Ages categorized: Youth (6-17), Young Adult (18-25), Adult (26-40), Senior (40+)
+- Gender normalized: male/female/other
+- Percentages calculated for all distributions
+
 ## Known Issues / Technical Debt
 
-1. **API Mismatch**: `app/tracking/page.tsx` calls `/api/generate-pitch-materials` but the route is actually `/api/generate-pitch`. This may cause pitch generation to fail on tracking page.
+1. ~~**API Mismatch**~~: FIXED - API route corrected from `/api/generate-pitch-materials` to `/api/generate-pitch`
 
 2. **Mock Data**: `/api/generate-sponsors` returns hardcoded sponsors instead of AI-generated recommendations.
 
 3. **No Backend**: All data stored in localStorage - users lose data if they clear browser storage or switch devices.
 
-4. **OpenAI API Key**: Must be set in environment variables (`OPENAI_API_KEY`) for pitch generation to work. No fallback handling if key is missing.
+4. ~~**OpenAI API Key**~~: FIXED - Now includes validation, error handling, and health check endpoint
 
 5. **Duplicate Detection**: Sponsors are deduplicated by name (case-insensitive) but different sponsors could have the same name.
 

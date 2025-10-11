@@ -60,3 +60,52 @@ export interface UserSession {
   clubData?: ClubData
   createdAt: string
 }
+
+// CSV/Excel Upload Types
+export interface MemberDataRow {
+  age?: number
+  dateOfBirth?: string
+  gender?: string
+  competitionLevel?: string
+  [key: string]: any // Allow flexible column names
+}
+
+export interface ParsedMemberData {
+  totalMembers: number
+  ageDistribution: {
+    youth: number // 6-17
+    youngAdult: number // 18-25
+    adult: number // 26-40
+    senior: number // 40+
+  }
+  ageDistributionPercentages: {
+    youth: number
+    youngAdult: number
+    adult: number
+    senior: number
+  }
+  genderDistribution: {
+    male: number
+    female: number
+    other: number
+  }
+  genderDistributionPercentages: {
+    male: number
+    female: number
+    other: number
+  }
+  dominantAgeGroup: string // Most common age group
+  dominantGender: string // "male-majority", "female-majority", or "balanced"
+  competitionLevels?: Record<string, number>
+}
+
+export interface FileUploadResponse {
+  success: boolean
+  data?: ParsedMemberData
+  error?: string
+  preview?: {
+    rowCount: number
+    sampleRows: any[]
+    columnsDetected: string[]
+  }
+}

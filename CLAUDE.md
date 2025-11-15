@@ -3,7 +3,9 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Mandatory Git Workflow - DO NOT SKIP
+
 Before writing ANY code, you MUST:
+
 1. Create a feature branch: `git checkout -b feature/[name]`
 2. Commit changes FREQUENTLY (every file/component)
 3. NEVER work on main branch directly
@@ -14,6 +16,7 @@ Before writing ANY code, you MUST:
 AI Sponsor Finder is a Next.js application that helps sports clubs find and connect with potential sponsors. It uses AI to analyze club demographics and generate personalized sponsor recommendations with ready-to-send pitch materials in multiple languages (English, French, German).
 
 **Key Features:**
+
 - AI-powered sponsor matching based on club demographics
 - Multi-language support (en/fr/de) for all content and pitch materials
 - **CSV/Excel file upload** - Upload member data files to automatically extract demographics
@@ -55,7 +58,7 @@ npm run lint
 app/
 ├── api/
 │   ├── generate-sponsors/route.ts    # Mock sponsor generation endpoint
-│   └── generate-pitch/route.ts        # AI pitch generation using OpenAI GPT-4o-mini
+│   └── generate-pitch/route.ts        # AI pitch generation using Google Gemini 1.5 Flash
 ├── layout.tsx                         # Root layout with theme provider
 ├── page.tsx                           # Home page with user setup + club form
 ├── results/page.tsx                   # Sponsor recommendations display
@@ -91,18 +94,21 @@ All state is managed via `UserStorage` class (`lib/user-storage.ts`).
 ### API Routes
 
 **`/api/generate-sponsors` (POST)**
+
 - Input: `ClubData` object
 - Output: `SponsorsResponse` with mock sponsors array, demographics analysis, recommended industries
 - Currently returns mock data (not using AI)
 
 **`/api/generate-pitch` (POST)**
+
 - Input: `{ clubData, sponsor, language }`
 - Output: `PitchContent` with emailSubject, emailBody, slogan, collaborationIdeas, keyBenefits, callToAction
-- Uses OpenAI `gpt-4o-mini` via AI SDK's `generateObject` with Zod schema validation
-- Requires `OPENAI_API_KEY` environment variable
+- Uses Google Gemini `gemini-1.5-flash` via AI SDK's `generateObject` with Zod schema validation
+- Requires `GOOGLE_GENERATIVE_AI_API_KEY` environment variable
 - **Enhanced:** Now includes API key validation and detailed error messages
 
 **`/api/upload-members` (POST)** - NEW
+
 - Input: FormData with file (CSV or Excel)
 - Output: `FileUploadResponse` with parsed member data and preview
 - Accepts .csv, .xlsx, .xls files (max 5MB)
@@ -111,8 +117,9 @@ All state is managed via `UserStorage` class (`lib/user-storage.ts`).
 - Uses `papaparse` for CSV and `xlsx` for Excel parsing
 
 **`/api/health` (GET)** - NEW
+
 - Health check endpoint to validate API configuration
-- Returns OpenAI API key status (configured/not configured) without exposing the key
+- Returns Google API key status (configured/not configured) without exposing the key
 - Useful for debugging deployment issues
 
 ### Type System
@@ -137,25 +144,30 @@ Core types in `lib/types.ts`:
 ## Important Implementation Notes
 
 ### V0 Integration
+
 This project was initialized and is synced with v0.app. Changes deployed on v0.app are automatically pushed to this repository. The repository stays in sync with deployed chats on v0.app.
 
 ### Build Configuration
+
 - ESLint errors ignored during builds (`ignoreDuringBuilds: true`)
 - TypeScript errors ignored during builds (`ignoreBuildErrors: true`)
 - Images are unoptimized (`unoptimized: true`)
 
 ### Responsive Design
+
 - Desktop: Kanban board with drag-and-drop for tracking page
 - Mobile/Tablet: Dropdown-based status management with filter tabs
 - Uses Tailwind breakpoints (`lg:` prefix for desktop-specific styles)
 
 ### AI Integration
-- Uses Vercel AI SDK (`ai` package) with OpenAI provider
-- Model: `gpt-4o-mini` for cost-effective pitch generation
+
+- Uses Vercel AI SDK (`ai` package) with Google provider
+- Model: `gemini-2.5-flash` for cost-effective pitch generation
 - Structured output via `generateObject` with Zod schemas
 - Temperature and other parameters can be tuned in route handlers
 
 ### Styling
+
 - Tailwind CSS v4 with PostCSS
 - shadcn/ui components (Radix UI primitives)
 - `class-variance-authority` for component variants
@@ -165,26 +177,32 @@ This project was initialized and is synced with v0.app. Changes deployed on v0.a
 ## Common Development Tasks
 
 ### Adding a New Language
+
 1. Add language code to `Language` type in `lib/types.ts`
 2. Add translations object in `lib/i18n.ts` following existing structure
 3. Update `languagePrompts` object in `/api/generate-pitch/route.ts`
 4. Update language selector options in `components/language-selector.tsx`
 
 ### Modifying Sponsor Generation
+
 Currently using mock data in `/api/generate-sponsors/route.ts`. To integrate real AI:
-1. Import OpenAI SDK and create schema in route handler
+
+1. Import Google Gemini SDK and create schema in route handler
 2. Use `generateObject` similar to `/api/generate-pitch/route.ts`
 3. Update prompt to analyze club demographics and suggest real sponsors
 4. Consider using web search or vector database for actual sponsor data
 
 ### Adding Tracking Status
+
 1. Update `SponsorStatus` type in `lib/types.ts`
 2. Add to `statusColumns` array in `/tracking/page.tsx`
 3. Update `getStatusColor` and `getStatusIcon` functions
 4. Columns will automatically appear in kanban board
 
 ### Debugging LocalStorage Issues
+
 Use browser DevTools → Application → Local Storage to inspect:
+
 - `ai-sponsor-user` - Check user is created properly
 - `ai-sponsor-session` - Verify clubData is saved
 - `trackedSponsors_{userId}` - Validate sponsor tracking state
@@ -196,16 +214,20 @@ Clear data: `UserStorage.clearUserData()` in console or manually delete keys.
 The application now supports uploading member data files to automatically extract demographics:
 
 ### Supported File Formats:
+
 - CSV (.csv)
 - Excel (.xlsx, .xls)
 - Maximum file size: 5MB
 
 ### Expected File Structure:
+
 Files should contain columns with member information. The parser supports flexible column names:
+
 - **Age data**: `age`, `Age`, `AGE`, `date_of_birth`, `dateOfBirth`, `dob`, `DOB`, `birthdate`
 - **Gender data**: `gender`, `Gender`, `GENDER`, `sex`, `Sex`
 
 ### How It Works:
+
 1. User clicks "Choose File" in the form
 2. File is uploaded to `/api/upload-members`
 3. Server parses the file using `papaparse` (CSV) or `xlsx` (Excel)
@@ -218,6 +240,7 @@ Files should contain columns with member information. The parser supports flexib
 7. Submit form as normal
 
 ### Parser Logic (`lib/member-data-parser.ts`):
+
 - Flexible column name matching (case-insensitive, handles underscores/spaces)
 - Age calculated from DOB if age column not present
 - Ages categorized: Youth (6-17), Young Adult (18-25), Adult (26-40), Senior (40+)
@@ -232,17 +255,19 @@ Files should contain columns with member information. The parser supports flexib
 
 3. **No Backend**: All data stored in localStorage - users lose data if they clear browser storage or switch devices.
 
-4. ~~**OpenAI API Key**~~: FIXED - Now includes validation, error handling, and health check endpoint
+4. ~~**Google API Key**~~: FIXED - Now includes validation, error handling, and health check endpoint
 
 5. **Duplicate Detection**: Sponsors are deduplicated by name (case-insensitive) but different sponsors could have the same name.
 
 ## Environment Variables
 
 Required:
-- `OPENAI_API_KEY` - OpenAI API key for pitch generation
+
+- `GOOGLE_GENERATIVE_AI_API_KEY` - Google API key for pitch generation using Gemini models
 
 ## Deployment
 
 Project is deployed on Vercel and automatically synced with v0.app:
+
 - Live URL: https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder
 - V0 Project: https://v0.app/chat/projects/8JeRrcgC6Ed

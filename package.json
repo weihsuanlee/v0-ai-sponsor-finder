@@ -9,7 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@ai-sdk/openai": "latest",
+    "@ai-sdk/google": "^2.0.20",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
@@ -51,6 +51,7 @@
     "lucide-react": "^0.454.0",
     "next": "14.2.16",
     "next-themes": "latest",
+    "papaparse": "^5.4.1",
     "react": "^18",
     "react-day-picker": "9.8.0",
     "react-dom": "^18",
@@ -61,9 +62,8 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
-    "zod": "^3.25.76",
-    "papaparse": "^5.4.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",

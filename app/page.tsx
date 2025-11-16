@@ -11,6 +11,7 @@ import UserSetup from "@/components/user-setup"
 import { useTranslation, type Language } from "@/lib/i18n"
 import { UserStorage } from "@/lib/user-storage"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function HomePage() {
   const [language, setLanguage] = useState<Language>("en")
@@ -64,6 +65,7 @@ export default function HomePage() {
                 </Button>
               </Link>
               <LanguageSelector value={language} onValueChange={setLanguage} />
+              <ThemeToggle />
             </div>
           </div>
         </div>

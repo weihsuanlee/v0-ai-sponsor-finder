@@ -114,22 +114,15 @@ export default function TrackingPage() {
     }
   }
 
-  const getStatusColor = (status: SponsorStatus) => {
-    switch (status) {
-      case "Not Contacted":
-        return "bg-gray-100 border-gray-300"
-      case "Contacted":
-        return "bg-blue-100 border-blue-300"
-      case "In Discussion":
-        return "bg-yellow-100 border-yellow-300"
-      case "Rejected":
-        return "bg-red-100 border-red-300"
-      case "Approved":
-        return "bg-green-100 border-green-300"
-      default:
-        return "bg-gray-100 border-gray-300"
-    }
+  const statusColorMap: Record<SponsorStatus, string> = {
+    "Not Contacted": "bg-slate-50 border-slate-200 dark:bg-slate-950/40 dark:border-slate-800",
+    Contacted: "bg-blue-50 border-blue-200 dark:bg-blue-500/20 dark:border-blue-500/40",
+    "In Discussion": "bg-amber-50 border-amber-200 dark:bg-amber-400/20 dark:border-amber-400/40",
+    Rejected: "bg-rose-50 border-rose-200 dark:bg-rose-500/20 dark:border-rose-500/40",
+    Approved: "bg-emerald-50 border-emerald-200 dark:bg-emerald-500/20 dark:border-emerald-500/40",
   }
+
+  const getStatusColor = (status: SponsorStatus) => statusColorMap[status] ?? statusColorMap["Not Contacted"]
 
   const statusColumns: { status: SponsorStatus; title: string; icon: React.ReactNode }[] = [
     { status: "Not Contacted", title: "Not Contacted", icon: <Target className="h-5 w-5" /> },
@@ -178,7 +171,7 @@ export default function TrackingPage() {
                 Start by adding sponsors from your results page to track your outreach progress.
               </p>
               <Link href="/results">
-                <Button className="cursor-pointer hover:bg-primary/90 transition-colors">
+                <Button>
                   <Target className="mr-2 h-4 w-4" />
                   View Sponsor Recommendations
                 </Button>
@@ -194,7 +187,7 @@ export default function TrackingPage() {
                   variant={mobileFilter === "All" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setMobileFilter("All")}
-                  className="cursor-pointer hover:bg-primary/90 transition-colors whitespace-nowrap flex-shrink-0"
+                  className="whitespace-nowrap flex-shrink-0"
                 >
                   All ({trackedSponsors.length})
                 </Button>
@@ -207,7 +200,7 @@ export default function TrackingPage() {
                       variant={isActive ? "default" : "outline"}
                       size="sm"
                       onClick={() => setMobileFilter(status)}
-                      className="cursor-pointer hover:bg-primary/90 transition-colors whitespace-nowrap flex-shrink-0"
+                      className="whitespace-nowrap flex-shrink-0"
                     >
                       <span className="mr-1">{icon}</span>
                       {title} ({count})
@@ -256,7 +249,7 @@ export default function TrackingPage() {
                       .map((sponsor) => (
                         <Card
                           key={sponsor.id}
-                          className="cursor-move hover:shadow-md transition-all duration-200 bg-white"
+                          className="cursor-move hover:shadow-md transition-all duration-200 dark:border-slate-800"
                           draggable
                           onDragStart={() => handleDragStart(sponsor)}
                         >
@@ -270,14 +263,14 @@ export default function TrackingPage() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => removeSponsor(sponsor.id)}
-                                className="text-destructive hover:text-destructive cursor-pointer hover:bg-destructive/10 transition-colors p-1 h-auto"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 transition-colors p-1 h-auto"
                               >
                                 <Trash2 className="h-3 w-3" />
                               </Button>
                             </div>
 
                             <div className="space-y-2">
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs dark:border-slate-700 dark:text-slate-100">
                                 {sponsor.industry}
                               </Badge>
                               <p className="text-xs text-muted-foreground line-clamp-2">{sponsor.description}</p>
@@ -294,7 +287,7 @@ export default function TrackingPage() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent text-xs"
+                                    className="w-full bg-transparent text-xs"
                                   >
                                     <Eye className="h-3 w-3 mr-1" />
                                     View Details
@@ -327,12 +320,7 @@ export default function TrackingPage() {
                                         <h4 className="font-medium mb-3">Contact Information</h4>
                                         <div className="space-y-2">
                                           {sponsor.contactInfo.website && (
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              asChild
-                                              className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
-                                            >
+                                            <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                               <a
                                                 href={sponsor.contactInfo.website}
                                                 target="_blank"
@@ -344,12 +332,7 @@ export default function TrackingPage() {
                                             </Button>
                                           )}
                                           {sponsor.contactInfo.email && (
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              asChild
-                                              className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
-                                            >
+                                            <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                               <a href={`mailto:${sponsor.contactInfo.email}`}>
                                                 <Mail className="h-3 w-3 mr-2" />
                                                 Send Email
@@ -357,12 +340,7 @@ export default function TrackingPage() {
                                             </Button>
                                           )}
                                           {sponsor.contactInfo.phone && (
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              asChild
-                                              className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
-                                            >
+                                            <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                               <a href={`tel:${sponsor.contactInfo.phone}`}>
                                                 <Phone className="h-3 w-3 mr-2" />
                                                 Call Now
@@ -404,7 +382,6 @@ export default function TrackingPage() {
                                           onClick={() => generatePitch(sponsor)}
                                           disabled={generatingPitch[sponsor.id]}
                                           size="sm"
-                                          className="cursor-pointer hover:bg-primary/90 transition-colors"
                                         >
                                           {generatingPitch[sponsor.id] ? (
                                             <>
@@ -479,7 +456,7 @@ export default function TrackingPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => removeSponsor(sponsor.id)}
-                        className="text-destructive hover:text-destructive cursor-pointer hover:bg-destructive/10 transition-colors p-1 h-auto flex-shrink-0"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 transition-colors p-1 h-auto flex-shrink-0"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -487,7 +464,7 @@ export default function TrackingPage() {
 
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs dark:border-slate-700 dark:text-slate-100">
                           {sponsor.industry}
                         </Badge>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -526,7 +503,7 @@ export default function TrackingPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
+                              className="w-full bg-transparent"
                             >
                               <Eye className="h-4 w-4 mr-2" />
                               View Details & Generate Pitch
@@ -559,12 +536,7 @@ export default function TrackingPage() {
                                   <h4 className="font-medium mb-3">Contact Information</h4>
                                   <div className="space-y-2">
                                     {sponsor.contactInfo.website && (
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        asChild
-                                        className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
-                                      >
+                                        <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                         <a href={sponsor.contactInfo.website} target="_blank" rel="noopener noreferrer">
                                           <Globe className="h-3 w-3 mr-2" />
                                           Visit Website
@@ -572,12 +544,7 @@ export default function TrackingPage() {
                                       </Button>
                                     )}
                                     {sponsor.contactInfo.email && (
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        asChild
-                                        className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
-                                      >
+                                        <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                         <a href={`mailto:${sponsor.contactInfo.email}`}>
                                           <Mail className="h-3 w-3 mr-2" />
                                           Send Email
@@ -585,12 +552,7 @@ export default function TrackingPage() {
                                       </Button>
                                     )}
                                     {sponsor.contactInfo.phone && (
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        asChild
-                                        className="w-full cursor-pointer hover:bg-accent transition-colors bg-transparent"
-                                      >
+                                        <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                         <a href={`tel:${sponsor.contactInfo.phone}`}>
                                           <Phone className="h-3 w-3 mr-2" />
                                           Call Now
@@ -632,7 +594,6 @@ export default function TrackingPage() {
                                     onClick={() => generatePitch(sponsor)}
                                     disabled={generatingPitch[sponsor.id]}
                                     size="sm"
-                                    className="cursor-pointer hover:bg-primary/90 transition-colors"
                                   >
                                     {generatingPitch[sponsor.id] ? (
                                       <>

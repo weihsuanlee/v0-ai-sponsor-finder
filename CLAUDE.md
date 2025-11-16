@@ -58,7 +58,7 @@ npm run lint
 app/
 ├── api/
 │   ├── generate-sponsors/route.ts    # Mock sponsor generation endpoint
-│   └── generate-pitch/route.ts        # AI pitch generation using Google Gemini 1.5 Flash
+│   └── generate-pitch/route.ts        # AI pitch generation using Google Gemini 2.5 Flash
 ├── layout.tsx                         # Root layout with theme provider
 ├── page.tsx                           # Home page with user setup + club form
 ├── results/page.tsx                   # Sponsor recommendations display
@@ -103,7 +103,7 @@ All state is managed via `UserStorage` class (`lib/user-storage.ts`).
 
 - Input: `{ clubData, sponsor, language }`
 - Output: `PitchContent` with emailSubject, emailBody, slogan, collaborationIdeas, keyBenefits, callToAction
-- Uses Google Gemini `gemini-1.5-flash` via AI SDK's `generateObject` with Zod schema validation
+- Uses Google Gemini `gemini-2.5-flash` via AI SDK's `generateObject` with Zod schema validation
 - Requires `GOOGLE_GENERATIVE_AI_API_KEY` environment variable
 - **Enhanced:** Now includes API key validation and detailed error messages
 

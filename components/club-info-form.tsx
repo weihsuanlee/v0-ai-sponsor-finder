@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Users, Upload, FileSpreadsheet, CheckCircle } from "lucide-react"
+import { ArrowRight, Users, Upload, FileSpreadsheet, CheckCircle, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslation, type Language } from "@/lib/i18n"
 import { UserStorage } from "@/lib/user-storage"
@@ -369,9 +369,24 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
 
         {/* Submit Button */}
         <div className="text-center pt-6">
-          <Button type="submit" size="lg" className="text-lg px-12" disabled={isLoading}>
-            {isLoading ? "Finding Sponsors..." : t("findSponsors")}
-            <ArrowRight className="ml-2 h-5 w-5" />
+          <Button
+            type="submit"
+            size="lg"
+            className="text-lg px-12"
+            disabled={isLoading || !isFormValid}
+            aria-busy={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Finding Sponsors...
+              </>
+            ) : (
+              <>
+                {t("findSponsors")}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </>
+            )}
           </Button>
         </div>
       </form>

@@ -1,30 +1,356 @@
 # AI Sponsor Finder
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+<div align="center">
+
+**Connect Sports Clubs with Perfect Sponsors Through Intelligent AI Matching**
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)
 [![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/8JeRrcgC6Ed)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Google Gemini](https://img.shields.io/badge/Google-Gemini%20AI-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+
+[Live Demo](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder) • [Report Bug](https://github.com/yourusername/v0-ai-sponsor-finder/issues) • [Request Feature](https://github.com/yourusername/v0-ai-sponsor-finder/issues)
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Running Locally](#running-locally)
+- [Testing (Built with Codex)](#testing-built-with-codex)
+- [Project Structure](#project-structure)
+- [AI Collaboration with Codex](#ai-collaboration-with-codex)
+- [Future Enhancements](#future-enhancements)
+
+---
 
 ## Overview
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+**AI Sponsor Finder** is an intelligent web application that revolutionizes how sports clubs connect with potential sponsors. By leveraging AI-powered demographic analysis and natural language generation, it matches clubs with relevant sponsors and automatically generates personalized pitch materials in multiple languages.
 
-## Deployment
+> The repo now ships with a dedicated **Codex integration**. Codex implements new features (like the dark/light theme), keeps the documentation current, adds automated tests, and performs code reviews on pull requests to safeguard quality.
 
-Your project is live at:
+### The Problem It Solves
 
-**[https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)**
+Finding the right sponsors is challenging for sports clubs:
 
-## Build your app
+- **Time-consuming research** to identify relevant sponsors
+- **Manual pitch creation** for each potential partner
+- **Language barriers** when targeting international sponsors
+- **Difficulty tracking** outreach progress across multiple prospects
 
-Continue building your app on:
+### The Three-Win Solution
 
-**[https://v0.app/chat/projects/8JeRrcgC6Ed](https://v0.app/chat/projects/8JeRrcgC6Ed)**
+This application creates value for all stakeholders:
 
-## How It Works
+1. **For Sports Clubs** 🏆
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+   - Save time with AI-powered sponsor matching
+   - Get professional pitch materials instantly
+   - Track outreach pipeline efficiently
+   - Reach international sponsors with multi-language support
+
+2. **For Club Management Platforms (like Clubee)** 💼
+
+   - Showcase potential AI-powered features
+   - Add value to existing club management offerings
+   - Demonstrate innovation in sports tech
+   - Create new revenue opportunities
+
+3. **For Sponsors** 🤝
+   - Connect with clubs that align with their brand values
+   - Receive well-researched, targeted partnership proposals
+   - Discover opportunities matching their target demographics
+   - Build authentic community relationships
+
+---
+
+## Key Features
+
+### 🎯 Smart Sponsor Matching
+
+- **AI-Powered Analysis**: Analyzes club demographics (age distribution, gender split, location, sport type) to identify compatible sponsors
+- **Industry Recommendations**: Suggests relevant sponsorship industries based on club profile
+- **Match Reasoning**: Explains why each sponsor would be a good fit for your specific club
+
+![Smart Sponsor Matching](./docs/screenshots/sponsor-matching.png)
+_AI analyzes your club demographics to find perfectly matched sponsors_
+
+### 📊 CSV/Excel Member Data Upload
+
+- **Bulk Import**: Upload member data files (.csv, .xlsx, .xls) up to 5MB
+- **Automatic Extraction**: Intelligently parses age, gender, and demographic data
+- **Smart Mapping**: Handles flexible column names and formats
+- **Age Calculation**: Automatically calculates ages from dates of birth
+- **Auto-Fill Forms**: Populates club demographics from uploaded data
+- **Data Preview**: Review parsed data before submission
+
+![CSV Upload Feature](./docs/screenshots/csv-upload.png)
+_Upload member data and automatically extract demographics_
+
+### 🤖 AI-Generated Pitch Materials
+
+- **Email Templates**: Professional, customized sponsorship inquiry emails
+- **Compelling Slogans**: Partnership taglines that resonate
+- **Collaboration Ideas**: Creative partnership concepts tailored to each sponsor
+- **Key Benefits**: Articulated value propositions for sponsors
+- **Call-to-Action**: Strong, actionable next steps
+
+![AI Pitch Generation](./docs/screenshots/pitch-generation.png)
+_Generate professional pitch materials instantly with AI_
+
+### 🌍 Multi-Language Support
+
+- **Three Languages**: English, French, and German
+- **Localized UI**: Complete interface translation
+- **Native Pitch Materials**: Generate proposals in the sponsor's preferred language
+- **Target European Markets**: Perfect for Luxembourg and surrounding regions
+
+![Multi-Language Support](./docs/screenshots/multi-language.png)
+_Create pitch materials in English, French, or German_
+
+### 📈 Kanban-Style Tracking Board
+
+- **Pipeline Management**: Track sponsors through stages (Not Contacted → Contacted → In Discussion → Rejected/Approved)
+- **Drag & Drop**: Desktop drag-and-drop interface for easy status updates
+- **Mobile Optimized**: Dropdown-based status management for mobile/tablet
+- **Visual Analytics**: See your outreach pipeline at a glance
+- **Historical Tracking**: Maintain records with timestamps
+
+![Kanban Tracking Board](./docs/screenshots/tracking-board.png)
+_Manage your sponsor outreach pipeline with drag-and-drop tracking_
+
+### 💾 LocalStorage-Based Persistence
+
+- **No Backend Required**: Fully client-side data storage
+- **User Sessions**: Maintain multiple user profiles
+- **Data Privacy**: All data stays on your device
+- **Fast Performance**: Instant load times with no server calls
+
+> **Note**: Screenshots are located in `./docs/screenshots/` directory. Add your own screenshots by placing images in this folder and they will be displayed automatically.
+
+### 🌓 Codex-Powered Dark/Light Theme
+
+- **Header Toggle**: Codex added the next-themes integration and UI toggle so users can switch instantly.
+- **Accessible Colors**: Hover/focus states are tuned for contrast in both palettes.
+- **Consistency**: All buttons inherit pointer/hover styles globally for a predictable feel.
+
+---
+
+## Technology Stack
+
+### Frontend
+
+- **[Next.js 14](https://nextjs.org/)** - React framework with App Router
+- **[React 18](https://react.dev/)** - UI library
+- **[TypeScript 5](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[Tailwind CSS 4](https://tailwindcss.com/)** - Utility-first styling
+- **[shadcn/ui](https://ui.shadcn.com/)** - High-quality React components
+- **[Radix UI](https://www.radix-ui.com/)** - Accessible component primitives
+
+### AI/ML Integration
+
+- **[Google Gemini 2.5 Flash](https://ai.google.dev/)** - LLM for pitch generation
+- **[Vercel AI SDK](https://sdk.vercel.ai/)** - Unified AI integration framework
+- **[Zod](https://zod.dev/)** - Schema validation for structured AI outputs
+
+### Data Processing
+
+- **[PapaParse](https://www.papaparse.com/)** - CSV parsing
+- **[xlsx](https://www.npmjs.com/package/xlsx)** - Excel file reading
+- **[Recharts](https://recharts.org/)** - Data visualization
+
+### Development Tools
+
+- **[PostCSS](https://postcss.org/)** - CSS processing
+- **[ESLint](https://eslint.org/)** - Code linting
+- **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
+
+### Deployment
+
+- **[Vercel](https://vercel.com/)** - Hosting and deployment platform
+- **[v0.app](https://v0.app/)** - AI-assisted development platform
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **npm** (ships with Node). If you prefer pnpm, install it globally and update the commands accordingly.
+- **Google Generative AI API Key** - [Get one here](https://makersuite.google.com/app/apikey)
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/v0-ai-sponsor-finder.git
+   cd v0-ai-sponsor-finder
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+### Configuration
+
+1. **Create environment file**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Add your Google API key**
+
+   ```env
+   GOOGLE_GENERATIVE_AI_API_KEY=your_api_key_here
+   ```
+
+   > **Getting an API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey) to generate a free API key for Gemini models.
+
+3. **Verify configuration** (optional)
+   ```bash
+   # After starting the dev server, visit:
+   http://localhost:3000/api/health
+   # Should return: {"status":"ok","googleApiConfigured":true}
+   ```
+
+### Running Locally
+
+**Development mode** (with hot reload):
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+**Production build**:
+
+```bash
+npm run build
+npm start
+```
+
+**Linting**:
+
+```bash
+npm run lint
+```
+
+---
+
+## Testing (Built with Codex)
+
+Codex added an automated testing stack that covers the core business logic, CSV parsing, and the most important UI flow.
+
+| Layer | Tooling | Command | What It Covers |
+| --- | --- | --- | --- |
+| Unit | [Vitest](https://vitest.dev/) | `npm run test:unit` | `lib/user-storage` behaviors such as session persistence and duplicate avoidance |
+| Integration | Vitest | `npm run test:integration` | `lib/member-data-parser` end-to-end parsing of messy CSV fields |
+| End-to-End | [Playwright](https://playwright.dev/) | `npm run test:e2e` | Launches the Next.js dev server, loads the homepage, and verifies CTA/theme toggle flows |
+
+> All three suites live under `tests/` and were implemented by Codex. Playwright automatically boots the dev server defined in `playwright.config.ts`, so no manual prep work is required.
+
+---
+
+## Project Structure
+
+```
+ai-sponsor-finder/
+├── app/                          # Next.js App Router
+│   ├── api/                      # API routes
+│   │   ├── generate-sponsors/    # Mock sponsor generation
+│   │   ├── generate-pitch/       # AI pitch generation (Gemini)
+│   │   ├── upload-members/       # CSV/Excel upload & parsing
+│   │   └── health/               # API health check
+│   ├── results/                  # Sponsor recommendations page
+│   ├── tracking/                 # Kanban tracking board
+│   ├── layout.tsx                # Root layout with theme
+│   └── page.tsx                  # Home page (user setup + form)
+│
+├── components/                   # React components
+│   ├── ui/                       # shadcn/ui components
+│   ├── club-info-form.tsx        # Main club data entry form
+│   ├── sponsor-card.tsx          # Individual sponsor display
+│   ├── demographics-chart.tsx    # Visual demographic charts
+│   ├── file-upload.tsx           # CSV/Excel upload component
+│   ├── language-selector.tsx     # Language switcher
+│   ├── user-setup.tsx            # User registration flow
+│   └── theme-provider.tsx        # Dark/light mode provider
+│
+├── lib/                          # Utilities and helpers
+│   ├── api.ts                    # Client-side API functions
+│   ├── types.ts                  # TypeScript type definitions
+│   ├── user-storage.ts           # LocalStorage management
+│   ├── member-data-parser.ts     # CSV/Excel parsing logic
+│   ├── i18n.ts                   # Translation system (en/fr/de)
+│   └── utils.ts                  # Utility functions
+│
+├── public/                       # Static assets
+├── styles/                       # Global styles
+├── test-data/                    # Sample CSV files for testing
+├── CLAUDE.md                     # AI assistant instructions
+└── package.json                  # Dependencies and scripts
+```
+
+### Key Files
+
+- **`app/api/generate-pitch/route.ts`** - AI pitch generation using Google Gemini with structured output
+- **`lib/member-data-parser.ts`** - Flexible CSV/Excel parsing with demographic extraction
+- **`lib/i18n.ts`** - Complete translation system for 3 languages
+- **`lib/user-storage.ts`** - LocalStorage abstraction for state management
+- **`components/club-info-form.tsx`** - Main form with CSV upload integration
+
+---
+
+## Development Journey
+
+### v0.app Rapid Prototyping
+
+- Sketched the initial UX in **v0.app**, letting natural-language prompts spin out Tailwind-styled components.
+- Used the generated scaffolding to land on the current IA, hero section, and sponsor cards within hours instead of days.
+- Treated this phase as the MVP foundation before layering in the rest of the stack.
+
+### Enhancements with Claude Code
+
+- Claude Code stepped in next to harden the app: cleaning API route inconsistencies, wiring CSV/XLS parsing, and integrating Google Gemini with structured outputs.
+- Added health checks, richer typing, and documentation polish during this pass to keep the prototype production-ready.
+
+### Codex Feature + Quality Pass
+
+- Codex now acts as the resident collaborator—implementing the dark/light theme toggle, refining hover/contrast states, and adding the automation described below.
+- Delivered the Vitest + Playwright test suites and keeps reviewing pull requests to maintain quality as the project grows.
+
+---
+
+## AI Collaboration with Codex
+
+- **Embedded Copilot**: Codex is wired into this repo (see `CLAUDE.md`) and is used for day-to-day implementation tasks.
+- **Dark/Light Theme**: The header toggle, hover fixes, and theme provider integration were fully delivered by Codex.
+- **Automated Code Review**: Every pull request is routed through Codex for a fast QA/code-review pass before merging.
+- **Test Suite**: The Vitest + Playwright setup, along with the initial specs under `tests/`, were planned and implemented by Codex.
+
+---
+
+## Future Enhancements
+
+1. **Verified Sponsor Data** – import real partner datasets and enrich them with public signals.
+2. **Automated Outreach** – push AI-generated pitches through SendGrid/Gmail integrations with tracking.
+3. **Performance Analytics** – surface open/response rates plus budget forecasts for each club.
+4. **Team Workspaces** – add auth, roles, and shared pipelines across club staff.
+5. **Public API & Integrations** – expose recommendations to Clubee/HubSpot and other CRMs.

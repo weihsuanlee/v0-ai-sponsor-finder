@@ -1,9 +1,16 @@
-import type { User, UserSession, ClubData, TrackedSponsor } from "./types"
+import type { User, UserSession, ClubData, TrackedSponsor, SponsorsResponse } from "./types"
 
 // Simple user management system using localStorage
+type SponsorCacheEntry = {
+  signature: string
+  generatedAt: string
+  data: SponsorsResponse
+}
+
 export class UserStorage {
   private static readonly USER_KEY = "ai-sponsor-user"
   private static readonly SESSION_KEY = "ai-sponsor-session"
+  private static readonly SPONSOR_CACHE_PREFIX = "ai-sponsor-cache"
 
   static getCurrentUser(): User | null {
     try {
@@ -119,11 +126,62 @@ export class UserStorage {
     const user = this.getCurrentUser()
     if (user) {
       localStorage.removeItem(`trackedSponsors_${user.id}`)
+      localStorage.removeItem(this.getSponsorCacheKey(user.id))
     }
     localStorage.removeItem(this.USER_KEY)
     localStorage.removeItem(this.SESSION_KEY)
     // Also clear legacy data
     localStorage.removeItem("clubData")
     localStorage.removeItem("trackedSponsors")
+  }
+
+  static getCachedSponsors(clubData: ClubData): SponsorsResponse | null {
+    const user = this.getCurrentUser()
+    if (!user) return null
+
+    try {
+      const raw = localStorage.getItem(this.getSponsorCacheKey(user.id))
+      if (!raw) return null
+      const cache = JSON.parse(raw) as SponsorCacheEntry
+      if (cache.signature === this.getClubSignature(clubData)) {
+        return cache.data
+      }
+    } catch {
+      return null
+    }
+
+    return null
+  }
+
+  static saveSponsorResults(clubData: ClubData, data: SponsorsResponse): void {
+    const user = this.getCurrentUser()
+    if (!user) return
+
+    const cache: SponsorCacheEntry = {
+      signature: this.getClubSignature(clubData),
+      generatedAt: new Date().toISOString(),
+      data,
+    }
+
+    localStorage.setItem(this.getSponsorCacheKey(user.id), JSON.stringify(cache))
+  }
+
+  private static getSponsorCacheKey(userId: string) {
+    return `${this.SPONSOR_CACHE_PREFIX}_${userId}`
+  }
+
+  private static getClubSignature(clubData: ClubData) {
+    const fields = [
+      clubData.clubName,
+      clubData.sportType,
+      clubData.location,
+      clubData.totalMembers,
+      clubData.ageGroups,
+      clubData.genderSplit,
+      clubData.competitionLevel,
+      clubData.additionalInfo,
+    ]
+
+    return fields.map((value) => String(value ?? "").trim().toLowerCase()).join("|")
   }
 }

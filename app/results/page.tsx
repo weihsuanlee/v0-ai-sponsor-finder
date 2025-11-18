@@ -30,8 +30,12 @@ export default function ResultsPage() {
 
         setClubData(storedClubData)
 
-        // Generate sponsors using AI
-        const sponsors = await generateSponsors(storedClubData)
+        let sponsors = UserStorage.getCachedSponsors(storedClubData)
+        if (!sponsors) {
+          sponsors = await generateSponsors(storedClubData)
+          UserStorage.saveSponsorResults(storedClubData, sponsors)
+        }
+
         setSponsorsData(sponsors)
       } catch (err) {
         console.error("Error loading data:", err)

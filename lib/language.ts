@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { Language } from "@/lib/i18n"
 
 const LANGUAGE_STORAGE_KEY = "selectedLanguage"
@@ -25,7 +25,12 @@ export const setStoredLanguage = (language: Language): void => {
 }
 
 export const useStoredLanguage = (initialLanguage: Language = "en") => {
-  const [language, setLanguageState] = useState<Language>(() => resolveStoredLanguage(initialLanguage))
+  const [language, setLanguageState] = useState<Language>(initialLanguage)
+
+  useEffect(() => {
+    const stored = getStoredLanguage(initialLanguage)
+    setLanguageState((current) => (current === stored ? current : stored))
+  }, [initialLanguage])
 
   const updateLanguage = useCallback((newLanguage: Language) => {
     setLanguageState(newLanguage)

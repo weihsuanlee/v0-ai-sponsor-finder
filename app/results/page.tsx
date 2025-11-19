@@ -12,19 +12,25 @@ import { generateSponsors } from "@/lib/api"
 import SponsorCard from "@/components/sponsor-card"
 import DemographicsChart from "@/components/demographics-chart"
 import { UserStorage } from "@/lib/user-storage"
+import LanguageSelector from "@/components/language-selector"
+import { useTranslation, type TranslationKey } from "@/lib/i18n"
+import { useStoredLanguage } from "@/lib/language"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function ResultsPage() {
+  const [language, setLanguage] = useStoredLanguage("en")
+  const { t } = useTranslation(language)
   const [clubData, setClubData] = useState<ClubData | null>(null)
   const [sponsorsData, setSponsorsData] = useState<SponsorsResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [errorKey, setErrorKey] = useState<TranslationKey | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const storedClubData = UserStorage.getClubData()
         if (!storedClubData) {
-          setError("No club data found. Please fill out the form first.")
+          setErrorKey("noClubDataError")
           return
         }
 
@@ -39,7 +45,7 @@ export default function ResultsPage() {
         setSponsorsData(sponsors)
       } catch (err) {
         console.error("Error loading data:", err)
-        setError("Failed to generate sponsor recommendations. Please try again.")
+        setErrorKey("sponsorGenerationError")
       } finally {
         setIsLoading(false)
       }
@@ -48,19 +54,19 @@ export default function ResultsPage() {
     loadData()
   }, [])
 
-  if (error) {
+  if (errorKey) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <Card className="max-w-md w-full text-center p-8">
           <CardContent>
             <div className="text-6xl mb-4">
-              <Target className="h-16 w-16 mx-auto text-muted-foreground" />
+              <Target className="h-16 w-16 mx-auto text-muted-foreground flex-shrink-0" />
             </div>
-            <p className="text-destructive mb-4">{error}</p>
+            <p className="text-destructive mb-4">{t(errorKey)}</p>
             <Link href="/">
               <Button className="cursor-pointer hover:bg-primary/90 transition-colors">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
+                <ArrowLeft className="mr-2 h-4 w-4 flex-shrink-0" />
+                {t("backToHome")}
               </Button>
             </Link>
           </CardContent>
@@ -80,20 +86,24 @@ export default function ResultsPage() {
                 href="/"
                 className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2 cursor-pointer transition-colors"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
+                <ArrowLeft className="mr-2 h-4 w-4 flex-shrink-0" />
+                {t("backToHome")}
               </Link>
               <h1 className="text-3xl font-bold flex items-center gap-2">
-                <Target className="h-8 w-8 text-primary" />
-                {clubData ? `Sponsor Recommendations for ${clubData.clubName}` : "Sponsor Recommendations"}
+                <Target className="h-8 w-8 text-primary flex-shrink-0" />
+                {clubData ? `${t("sponsorRecommendations")} ${clubData.clubName}` : t("sponsorRecommendations")}
               </h1>
             </div>
-            <Link href="/tracking">
-              <Button variant="outline" className="cursor-pointer hover:bg-accent transition-colors bg-transparent">
-                <BarChart3 className="mr-2 h-4 w-4" />
-                Go to Tracking
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/tracking">
+                <Button variant="outline" className="cursor-pointer hover:bg-accent transition-colors bg-transparent">
+                  <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0" />
+                  {t("goToTracking")}
+                </Button>
+              </Link>
+              <LanguageSelector value={language} onValueChange={setLanguage} className="w-36" />
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
@@ -133,14 +143,14 @@ export default function ResultsPage() {
             {clubData && sponsorsData && (
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <DemographicsChart clubData={clubData} />
+                  <DemographicsChart clubData={clubData} language={language} />
                 </div>
                 <div className="space-y-4">
                   <Card className="border-2 border-primary/20 bg-primary/5">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <BarChart3 className="h-5 w-5 text-primary" />
-                        Demographics Analysis
+                        <BarChart3 className="h-5 w-5 text-primary flex-shrink-0" />
+                        {t("demographicsAnalysis")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -151,8 +161,8 @@ export default function ResultsPage() {
                   <Card className="border-2 border-primary/20 bg-primary/5">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Building2 className="h-5 w-5 text-primary" />
-                        Recommended Industries
+                        <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
+                        {t("recommendedIndustries")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -173,16 +183,21 @@ export default function ResultsPage() {
             {sponsorsData && clubData && (
               <div>
                 <div className="flex items-center gap-2 mb-6">
-                  <Handshake className="h-8 w-8 text-primary" />
-                  <h2 className="text-2xl font-bold">Potential Sponsors</h2>
+                  <Handshake className="h-8 w-8 text-primary flex-shrink-0" />
+                  <h2 className="text-2xl font-bold">{t("potentialSponsors")}</h2>
                   <Badge variant="outline" className="bg-primary/10">
-                    {sponsorsData.sponsors.length} matches found
+                    {sponsorsData.sponsors.length} {t("matchesFound")}
                   </Badge>
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-6">
                   {sponsorsData.sponsors.map((sponsor, index) => (
-                    <SponsorCard key={index} sponsor={sponsor} clubData={clubData} />
+                    <SponsorCard
+                      key={`${language}-${sponsor.name}-${index}`}
+                      sponsor={sponsor}
+                      clubData={clubData}
+                      language={language}
+                    />
                   ))}
                 </div>
               </div>

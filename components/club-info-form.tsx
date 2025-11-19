@@ -16,6 +16,7 @@ import { useTranslation, type Language } from "@/lib/i18n"
 import { UserStorage } from "@/lib/user-storage"
 import FileUpload from "@/components/file-upload"
 import type { ParsedMemberData } from "@/lib/types"
+import { setStoredLanguage } from "@/lib/language"
 
 export interface ClubData {
   clubName: string
@@ -130,7 +131,7 @@ export default function ClubInfoForm({ language }: ClubInfoFormProps) {
 
     try {
       UserStorage.updateSession(formData)
-      localStorage.setItem("selectedLanguage", language)
+      setStoredLanguage(language)
 
       // Navigate to results page
       router.push("/results")

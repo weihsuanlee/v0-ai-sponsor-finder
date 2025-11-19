@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft,
   Trash2,
@@ -23,96 +23,102 @@ import {
   Bot,
   Zap,
   FileText,
-} from "lucide-react"
-import Link from "next/link"
-import type { Sponsor, ClubData } from "@/lib/types"
-import { generatePitchMaterials } from "@/lib/api"
-import { UserStorage } from "@/lib/user-storage"
+} from "lucide-react";
+import Link from "next/link";
+import type { Sponsor, ClubData } from "@/lib/types";
+import { generatePitchMaterials } from "@/lib/api";
+import { UserStorage } from "@/lib/user-storage";
+import LanguageSelector from "@/components/language-selector";
+import { useStoredLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/i18n";
+import { ThemeToggle } from "@/components/theme-toggle";
 
-type SponsorStatus = "Not Contacted" | "Contacted" | "In Discussion" | "Rejected" | "Approved"
+type SponsorStatus = "Not Contacted" | "Contacted" | "In Discussion" | "Rejected" | "Approved";
 
 interface TrackedSponsor extends Sponsor {
-  id: string
-  status: SponsorStatus
-  dateAdded: string
-  clubData: ClubData
+  id: string;
+  status: SponsorStatus;
+  dateAdded: string;
+  clubData: ClubData;
 }
 
 export default function TrackingPage() {
-  const [trackedSponsors, setTrackedSponsors] = useState<TrackedSponsor[]>([])
-  const [draggedSponsor, setDraggedSponsor] = useState<TrackedSponsor | null>(null)
-  const [pitchMaterials, setPitchMaterials] = useState<Record<string, any>>({})
-  const [generatingPitch, setGeneratingPitch] = useState<Record<string, boolean>>({})
-  const [mobileFilter, setMobileFilter] = useState<SponsorStatus | "All">("All")
+  const [language, setLanguage] = useStoredLanguage("en");
+  const { t } = useTranslation(language);
+  const [trackedSponsors, setTrackedSponsors] = useState<TrackedSponsor[]>([]);
+  const [draggedSponsor, setDraggedSponsor] = useState<TrackedSponsor | null>(null);
+  const [pitchMaterials, setPitchMaterials] = useState<Record<string, any>>({});
+  const [generatingPitch, setGeneratingPitch] = useState<Record<string, boolean>>({});
+  const [mobileFilter, setMobileFilter] = useState<SponsorStatus | "All">("All");
 
   useEffect(() => {
-    const sponsors = UserStorage.getTrackedSponsors()
-    setTrackedSponsors(sponsors)
-  }, [])
+    const sponsors = UserStorage.getTrackedSponsors();
+    setTrackedSponsors(sponsors);
+  }, []);
 
   const updateSponsorStatus = (sponsorId: string, newStatus: SponsorStatus) => {
-    UserStorage.updateSponsorStatus(sponsorId, newStatus)
-    const updated = UserStorage.getTrackedSponsors()
-    setTrackedSponsors(updated)
-  }
+    UserStorage.updateSponsorStatus(sponsorId, newStatus);
+    const updated = UserStorage.getTrackedSponsors();
+    setTrackedSponsors(updated);
+  };
 
   const removeSponsor = (sponsorId: string) => {
-    UserStorage.removeTrackedSponsor(sponsorId)
-    const updated = UserStorage.getTrackedSponsors()
-    setTrackedSponsors(updated)
-  }
+    UserStorage.removeTrackedSponsor(sponsorId);
+    const updated = UserStorage.getTrackedSponsors();
+    setTrackedSponsors(updated);
+  };
 
   const handleDragStart = (sponsor: TrackedSponsor) => {
-    setDraggedSponsor(sponsor)
-  }
+    setDraggedSponsor(sponsor);
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
 
   const handleDrop = (e: React.DragEvent, newStatus: SponsorStatus) => {
-    e.preventDefault()
+    e.preventDefault();
     if (draggedSponsor) {
-      updateSponsorStatus(draggedSponsor.id, newStatus)
-      setDraggedSponsor(null)
+      updateSponsorStatus(draggedSponsor.id, newStatus);
+      setDraggedSponsor(null);
     }
-  }
+  };
 
   const generatePitch = async (sponsor: TrackedSponsor) => {
-    setGeneratingPitch((prev) => ({ ...prev, [sponsor.id]: true }))
+    setGeneratingPitch((prev) => ({ ...prev, [sponsor.id]: true }));
     try {
-      const materials = await generatePitchMaterials(sponsor, sponsor.clubData)
-      setPitchMaterials((prev) => ({ ...prev, [sponsor.id]: materials }))
+      const materials = await generatePitchMaterials(sponsor, sponsor.clubData);
+      setPitchMaterials((prev) => ({ ...prev, [sponsor.id]: materials }));
     } catch (error) {
-      console.error("Error generating pitch materials:", error)
+      console.error("Error generating pitch materials:", error);
     } finally {
-      setGeneratingPitch((prev) => ({ ...prev, [sponsor.id]: false }))
+      setGeneratingPitch((prev) => ({ ...prev, [sponsor.id]: false }));
     }
-  }
+  };
 
   const handleMobileFilterToggle = (status: SponsorStatus) => {
-    setMobileFilter(mobileFilter === status ? "All" : status)
-  }
+    setMobileFilter(mobileFilter === status ? "All" : status);
+  };
 
   const filteredSponsors =
-    mobileFilter === "All" ? trackedSponsors : trackedSponsors.filter((sponsor) => sponsor.status === mobileFilter)
+    mobileFilter === "All" ? trackedSponsors : trackedSponsors.filter((sponsor) => sponsor.status === mobileFilter);
 
   const getStatusIcon = (status: SponsorStatus) => {
     switch (status) {
       case "Not Contacted":
-        return <Target className="h-4 w-4" />
+        return <Target className="h-4 w-4 flex-shrink-0" />;
       case "Contacted":
-        return <Mail className="h-4 w-4" />
+        return <Mail className="h-4 w-4 flex-shrink-0" />;
       case "In Discussion":
-        return <Users className="h-4 w-4" />
+        return <Users className="h-4 w-4 flex-shrink-0" />;
       case "Rejected":
-        return <ArrowLeft className="h-4 w-4" />
+        return <ArrowLeft className="h-4 w-4 flex-shrink-0" />;
       case "Approved":
-        return <BarChart3 className="h-4 w-4" />
+        return <BarChart3 className="h-4 w-4 flex-shrink-0" />;
       default:
-        return <Target className="h-4 w-4" />
+        return <Target className="h-4 w-4 flex-shrink-0" />;
     }
-  }
+  };
 
   const statusColorMap: Record<SponsorStatus, string> = {
     "Not Contacted": "bg-slate-50 border-slate-200 dark:bg-slate-950/40 dark:border-slate-800",
@@ -120,17 +126,33 @@ export default function TrackingPage() {
     "In Discussion": "bg-amber-50 border-amber-200 dark:bg-amber-400/20 dark:border-amber-400/40",
     Rejected: "bg-rose-50 border-rose-200 dark:bg-rose-500/20 dark:border-rose-500/40",
     Approved: "bg-emerald-50 border-emerald-200 dark:bg-emerald-500/20 dark:border-emerald-500/40",
-  }
+  };
 
-  const getStatusColor = (status: SponsorStatus) => statusColorMap[status] ?? statusColorMap["Not Contacted"]
+  const getStatusColor = (status: SponsorStatus) => statusColorMap[status] ?? statusColorMap["Not Contacted"];
+
+  const statusLabels: Record<SponsorStatus, string> = {
+    "Not Contacted": t("statusNotContacted"),
+    Contacted: t("statusContacted"),
+    "In Discussion": t("statusInDiscussion"),
+    Rejected: t("statusRejected"),
+    Approved: t("statusApproved"),
+  };
 
   const statusColumns: { status: SponsorStatus; title: string; icon: React.ReactNode }[] = [
-    { status: "Not Contacted", title: "Not Contacted", icon: <Target className="h-5 w-5" /> },
-    { status: "Contacted", title: "Contacted", icon: <Mail className="h-5 w-5" /> },
-    { status: "In Discussion", title: "In Discussion", icon: <Users className="h-5 w-5" /> },
-    { status: "Rejected", title: "Rejected", icon: <ArrowLeft className="h-5 w-5" /> },
-    { status: "Approved", title: "Approved", icon: <BarChart3 className="h-5 w-5" /> },
-  ]
+    {
+      status: "Not Contacted",
+      title: statusLabels["Not Contacted"],
+      icon: <Target className="h-5 w-5 flex-shrink-0" />,
+    },
+    { status: "Contacted", title: statusLabels["Contacted"], icon: <Mail className="h-5 w-5 flex-shrink-0" /> },
+    {
+      status: "In Discussion",
+      title: statusLabels["In Discussion"],
+      icon: <Users className="h-5 w-5 flex-shrink-0" />,
+    },
+    { status: "Rejected", title: statusLabels["Rejected"], icon: <ArrowLeft className="h-5 w-5 flex-shrink-0" /> },
+    { status: "Approved", title: statusLabels["Approved"], icon: <BarChart3 className="h-5 w-5 flex-shrink-0" /> },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -144,16 +166,20 @@ export default function TrackingPage() {
                 className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2 cursor-pointer transition-colors"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Results
+                {t("backToResults")}
               </Link>
               <h1 className="text-3xl font-bold flex items-center gap-2">
-                <BarChart3 className="h-8 w-8 text-primary" />
-                Sponsor Tracking Board
+                <BarChart3 className="h-8 w-8 text-primary flex-shrink-0" />
+                {t("trackingTitle")}
               </h1>
               <p className="text-muted-foreground mt-1">
-                <span className="hidden lg:inline">Drag and drop sponsors to update their status</span>
-                <span className="lg:hidden">Manage your sponsor outreach pipeline</span>
+                <span className="hidden lg:inline">{t("trackingSubtitleDesktop")}</span>
+                <span className="lg:hidden">{t("trackingSubtitleMobile")}</span>
               </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <LanguageSelector value={language} onValueChange={setLanguage} className="w-36" />
+              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -164,16 +190,14 @@ export default function TrackingPage() {
           <Card className="text-center p-12">
             <CardContent>
               <div className="mb-4">
-                <Target className="h-16 w-16 mx-auto text-muted-foreground" />
+                <Target className="h-16 w-16 mx-auto text-muted-foreground flex-shrink-0" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">No Sponsors Tracked Yet</h2>
-              <p className="text-muted-foreground mb-6">
-                Start by adding sponsors from your results page to track your outreach progress.
-              </p>
+              <h2 className="text-2xl font-bold mb-2">{t("trackingEmptyTitle")}</h2>
+              <p className="text-muted-foreground mb-6">{t("trackingEmptyDescription")}</p>
               <Link href="/results">
                 <Button>
                   <Target className="mr-2 h-4 w-4" />
-                  View Sponsor Recommendations
+                  {t("viewSponsorRecommendations")}
                 </Button>
               </Link>
             </CardContent>
@@ -189,11 +213,11 @@ export default function TrackingPage() {
                   onClick={() => setMobileFilter("All")}
                   className="whitespace-nowrap flex-shrink-0"
                 >
-                  All ({trackedSponsors.length})
+                  {t("filterAll")} ({trackedSponsors.length})
                 </Button>
                 {statusColumns.map(({ status, title, icon }) => {
-                  const count = trackedSponsors.filter((s) => s.status === status).length
-                  const isActive = mobileFilter === status
+                  const count = trackedSponsors.filter((s) => s.status === status).length;
+                  const isActive = mobileFilter === status;
                   return (
                     <Button
                       key={status}
@@ -205,7 +229,7 @@ export default function TrackingPage() {
                       <span className="mr-1">{icon}</span>
                       {title} ({count})
                     </Button>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -213,7 +237,7 @@ export default function TrackingPage() {
             {/* Pipeline Stats - Desktop Cards */}
             <div className="hidden lg:grid lg:grid-cols-5 gap-4">
               {statusColumns.map(({ status, title, icon }) => {
-                const count = trackedSponsors.filter((s) => s.status === status).length
+                const count = trackedSponsors.filter((s) => s.status === status).length;
                 return (
                   <Card key={status} className="hover:shadow-md transition-all">
                     <CardContent className="p-4 text-center">
@@ -222,7 +246,7 @@ export default function TrackingPage() {
                       <div className="text-xs text-muted-foreground">{title}</div>
                     </CardContent>
                   </Card>
-                )
+                );
               })}
             </div>
 
@@ -255,7 +279,7 @@ export default function TrackingPage() {
                         >
                           <CardContent className="p-3">
                             <div className="flex items-start justify-between mb-2">
-                              <div className="flex items-center gap-2 line-clamp-1">
+                              <div className="flex items-center gap-2 line-clamp-1 min-w-0">
                                 <Building2 className="h-4 w-4 text-primary flex-shrink-0" />
                                 <h4 className="font-semibold text-sm truncate">{sponsor.name}</h4>
                               </div>
@@ -265,18 +289,22 @@ export default function TrackingPage() {
                                 onClick={() => removeSponsor(sponsor.id)}
                                 className="text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 transition-colors p-1 h-auto"
                               >
-                                <Trash2 className="h-3 w-3" />
+                                <Trash2 className="h-3 w-3 flex-shrink-0" />
                               </Button>
                             </div>
 
                             <div className="space-y-2">
-                              <Badge variant="outline" className="text-xs dark:border-slate-700 dark:text-slate-100">
+                              <Badge
+                                variant="outline"
+                                className="text-xs dark:border-slate-700 dark:text-slate-100 max-w-full line-clamp-1 truncate"
+                                title={sponsor.industry}
+                              >
                                 {sponsor.industry}
                               </Badge>
                               <p className="text-xs text-muted-foreground line-clamp-2">{sponsor.description}</p>
 
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
+                                <Calendar className="h-3 w-3 flex-shrink-0" />
                                 {new Date(sponsor.dateAdded).toLocaleDateString()}
                               </div>
                             </div>
@@ -284,19 +312,15 @@ export default function TrackingPage() {
                             <div className="mt-3 pt-2 border-t">
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-full bg-transparent text-xs"
-                                  >
-                                    <Eye className="h-3 w-3 mr-1" />
-                                    View Details
+                                  <Button variant="outline" size="sm" className="w-full bg-transparent text-xs">
+                                    <Eye className="h-3 w-3 mr-1 flex-shrink-0" />
+                                    {t("viewDetails")}
                                   </Button>
                                 </DialogTrigger>
                                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                                   <DialogHeader>
                                     <DialogTitle className="flex items-center gap-2">
-                                      <Building2 className="h-5 w-5" />
+                                      <Building2 className="h-5 w-5 flex-shrink-0" />
                                       {sponsor.name}
                                     </DialogTitle>
                                   </DialogHeader>
@@ -304,46 +328,61 @@ export default function TrackingPage() {
                                   <div className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                       <div>
-                                        <h4 className="font-medium mb-3">Company Details</h4>
+                                        <h4 className="font-medium mb-3">{t("companyDetails")}</h4>
                                         <p className="text-sm text-muted-foreground mb-3">{sponsor.description}</p>
                                         <div className="space-y-2 text-sm">
                                           <div>
-                                            <strong>Industry:</strong> {sponsor.industry}
+                                            <strong>{t("industryLabel")}:</strong> {sponsor.industry}
                                           </div>
                                           <div>
-                                            <strong>Target Audience:</strong> {sponsor.targetAudience}
+                                            <strong>{t("targetAudienceLabel")}:</strong> {sponsor.targetAudience}
                                           </div>
                                         </div>
                                       </div>
 
                                       <div>
-                                        <h4 className="font-medium mb-3">Contact Information</h4>
+                                        <h4 className="font-medium mb-3">{t("contactInformation")}</h4>
                                         <div className="space-y-2">
                                           {sponsor.contactInfo.website && (
-                                            <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              asChild
+                                              className="w-full bg-transparent"
+                                            >
                                               <a
                                                 href={sponsor.contactInfo.website}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                               >
-                                                <Globe className="h-3 w-3 mr-2" />
-                                                Visit Website
+                                                <Globe className="h-3 w-3 mr-2 flex-shrink-0" />
+                                                {t("visitWebsite")}
                                               </a>
                                             </Button>
                                           )}
                                           {sponsor.contactInfo.email && (
-                                            <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              asChild
+                                              className="w-full bg-transparent"
+                                            >
                                               <a href={`mailto:${sponsor.contactInfo.email}`}>
-                                                <Mail className="h-3 w-3 mr-2" />
-                                                Send Email
+                                                <Mail className="h-3 w-3 mr-2 flex-shrink-0" />
+                                                {t("sendEmail")}
                                               </a>
                                             </Button>
                                           )}
                                           {sponsor.contactInfo.phone && (
-                                            <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              asChild
+                                              className="w-full bg-transparent"
+                                            >
                                               <a href={`tel:${sponsor.contactInfo.phone}`}>
-                                                <Phone className="h-3 w-3 mr-2" />
-                                                Call Now
+                                                <Phone className="h-3 w-3 mr-2 flex-shrink-0" />
+                                                {t("callNow")}
                                               </a>
                                             </Button>
                                           )}
@@ -352,7 +391,7 @@ export default function TrackingPage() {
                                     </div>
 
                                     <div>
-                                      <h4 className="font-medium mb-2">Why They'd Sponsor</h4>
+                                      <h4 className="font-medium mb-2">{t("whyTheyWouldSponsor")}</h4>
                                       <p className="text-sm text-muted-foreground bg-primary/5 p-3 rounded-lg">
                                         {sponsor.matchReason}
                                       </p>
@@ -360,7 +399,7 @@ export default function TrackingPage() {
 
                                     {sponsor.campaignIdeas && (
                                       <div>
-                                        <h4 className="font-medium mb-2">Campaign Ideas</h4>
+                                        <h4 className="font-medium mb-2">{t("campaignIdeas")}</h4>
                                         <ul className="text-sm text-muted-foreground space-y-1">
                                           {sponsor.campaignIdeas.map((idea, index) => (
                                             <li key={index} className="flex items-start gap-2">
@@ -375,8 +414,8 @@ export default function TrackingPage() {
                                     <div className="border-t pt-4">
                                       <div className="flex items-center justify-between mb-3">
                                         <h4 className="font-medium flex items-center gap-2">
-                                          <Bot className="h-4 w-4" />
-                                          AI Pitch Materials
+                                          <Bot className="h-4 w-4 flex-shrink-0" />
+                                          {t("aiPitchMaterials")}
                                         </h4>
                                         <Button
                                           onClick={() => generatePitch(sponsor)}
@@ -385,13 +424,13 @@ export default function TrackingPage() {
                                         >
                                           {generatingPitch[sponsor.id] ? (
                                             <>
-                                              <Zap className="h-3 w-3 mr-2 animate-spin" />
-                                              Generating...
+                                              <Zap className="h-3 w-3 mr-2 animate-spin flex-shrink-0" />
+                                              {t("generating")}
                                             </>
                                           ) : (
                                             <>
-                                              <FileText className="h-3 w-3 mr-2" />
-                                              Generate Pitch
+                                              <FileText className="h-3 w-3 mr-2 flex-shrink-0" />
+                                              {t("generatePitch")}
                                             </>
                                           )}
                                         </Button>
@@ -400,17 +439,17 @@ export default function TrackingPage() {
                                       {pitchMaterials[sponsor.id] && (
                                         <div className="space-y-3">
                                           <div className="bg-primary/5 p-3 rounded-lg">
-                                            <h5 className="font-medium text-sm mb-2">Email Subject</h5>
+                                            <h5 className="font-medium text-sm mb-2">{t("emailSubject")}</h5>
                                             <p className="text-sm">{pitchMaterials[sponsor.id].emailSubject}</p>
                                           </div>
                                           <div className="bg-primary/5 p-3 rounded-lg">
-                                            <h5 className="font-medium text-sm mb-2">Pitch Email</h5>
+                                            <h5 className="font-medium text-sm mb-2">{t("pitchEmail")}</h5>
                                             <div className="text-sm whitespace-pre-wrap">
                                               {pitchMaterials[sponsor.id].pitchEmail}
                                             </div>
                                           </div>
                                           <div className="bg-primary/5 p-3 rounded-lg">
-                                            <h5 className="font-medium text-sm mb-2">Key Talking Points</h5>
+                                            <h5 className="font-medium text-sm mb-2">{t("keyTalkingPoints")}</h5>
                                             <ul className="text-sm space-y-1">
                                               {pitchMaterials[sponsor.id].talkingPoints?.map(
                                                 (point: string, index: number) => (
@@ -418,7 +457,7 @@ export default function TrackingPage() {
                                                     <span className="text-primary">•</span>
                                                     {point}
                                                   </li>
-                                                ),
+                                                )
                                               )}
                                             </ul>
                                           </div>
@@ -441,7 +480,8 @@ export default function TrackingPage() {
             <div className="lg:hidden space-y-4">
               {mobileFilter !== "All" && (
                 <div className="text-sm text-muted-foreground text-center py-2">
-                  Showing {filteredSponsors.length} sponsors with status: <strong>{mobileFilter}</strong>
+                  {t("trackingFilterShowing")} {filteredSponsors.length} {t("trackingFilterSponsorsWithStatus")}{" "}
+                  <strong>{statusLabels[mobileFilter as SponsorStatus]}</strong>
                 </div>
               )}
               {filteredSponsors.map((sponsor) => (
@@ -458,17 +498,21 @@ export default function TrackingPage() {
                         onClick={() => removeSponsor(sponsor.id)}
                         className="text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 transition-colors p-1 h-auto flex-shrink-0"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 flex-shrink-0" />
                       </Button>
                     </div>
 
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs dark:border-slate-700 dark:text-slate-100">
+                        <Badge
+                          variant="outline"
+                          className="text-xs dark:border-slate-700 dark:text-slate-100 max-w-full truncate"
+                          title={sponsor.industry}
+                        >
                           {sponsor.industry}
                         </Badge>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
+                          <Calendar className="h-3 w-3 flex-shrink-0" />
                           {new Date(sponsor.dateAdded).toLocaleDateString()}
                         </div>
                       </div>
@@ -476,7 +520,7 @@ export default function TrackingPage() {
                       <p className="text-sm text-muted-foreground line-clamp-2">{sponsor.description}</p>
 
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">Status:</span>
+                        <span className="text-sm font-medium">{t("statusLabel")}</span>
                         <Select
                           value={sponsor.status}
                           onValueChange={(newStatus: SponsorStatus) => updateSponsorStatus(sponsor.id, newStatus)}
@@ -500,19 +544,15 @@ export default function TrackingPage() {
                       <div className="pt-2 border-t">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full bg-transparent"
-                            >
-                              <Eye className="h-4 w-4 mr-2" />
-                              View Details & Generate Pitch
+                            <Button variant="outline" size="sm" className="w-full bg-transparent">
+                              <Eye className="h-4 w-4 mr-2 flex-shrink-0" />
+                              {t("viewDetailsAndGenerate")}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle className="flex items-center gap-2">
-                                <Building2 className="h-5 w-5" />
+                                <Building2 className="h-5 w-5 flex-shrink-0" />
                                 {sponsor.name}
                               </DialogTitle>
                             </DialogHeader>
@@ -520,42 +560,42 @@ export default function TrackingPage() {
                             <div className="space-y-6">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                  <h4 className="font-medium mb-3">Company Details</h4>
+                                  <h4 className="font-medium mb-3">{t("companyDetails")}</h4>
                                   <p className="text-sm text-muted-foreground mb-3">{sponsor.description}</p>
                                   <div className="space-y-2 text-sm">
                                     <div>
-                                      <strong>Industry:</strong> {sponsor.industry}
+                                      <strong>{t("industryLabel")}:</strong> {sponsor.industry}
                                     </div>
                                     <div>
-                                      <strong>Target Audience:</strong> {sponsor.targetAudience}
+                                      <strong>{t("targetAudienceLabel")}:</strong> {sponsor.targetAudience}
                                     </div>
                                   </div>
                                 </div>
 
                                 <div>
-                                  <h4 className="font-medium mb-3">Contact Information</h4>
+                                  <h4 className="font-medium mb-3">{t("contactInformation")}</h4>
                                   <div className="space-y-2">
                                     {sponsor.contactInfo.website && (
-                                        <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
+                                      <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                         <a href={sponsor.contactInfo.website} target="_blank" rel="noopener noreferrer">
-                                          <Globe className="h-3 w-3 mr-2" />
-                                          Visit Website
+                                          <Globe className="h-3 w-3 mr-2 flex-shrink-0" />
+                                          {t("visitWebsite")}
                                         </a>
                                       </Button>
                                     )}
                                     {sponsor.contactInfo.email && (
-                                        <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
+                                      <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                         <a href={`mailto:${sponsor.contactInfo.email}`}>
-                                          <Mail className="h-3 w-3 mr-2" />
-                                          Send Email
+                                          <Mail className="h-3 w-3 mr-2 flex-shrink-0" />
+                                          {t("sendEmail")}
                                         </a>
                                       </Button>
                                     )}
                                     {sponsor.contactInfo.phone && (
-                                        <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
+                                      <Button variant="outline" size="sm" asChild className="w-full bg-transparent">
                                         <a href={`tel:${sponsor.contactInfo.phone}`}>
-                                          <Phone className="h-3 w-3 mr-2" />
-                                          Call Now
+                                          <Phone className="h-3 w-3 mr-2 flex-shrink-0" />
+                                          {t("callNow")}
                                         </a>
                                       </Button>
                                     )}
@@ -564,7 +604,7 @@ export default function TrackingPage() {
                               </div>
 
                               <div>
-                                <h4 className="font-medium mb-2">Why They'd Sponsor</h4>
+                                <h4 className="font-medium mb-2">{t("whyTheyWouldSponsor")}</h4>
                                 <p className="text-sm text-muted-foreground bg-primary/5 p-3 rounded-lg">
                                   {sponsor.matchReason}
                                 </p>
@@ -572,7 +612,7 @@ export default function TrackingPage() {
 
                               {sponsor.campaignIdeas && (
                                 <div>
-                                  <h4 className="font-medium mb-2">Campaign Ideas</h4>
+                                  <h4 className="font-medium mb-2">{t("campaignIdeas")}</h4>
                                   <ul className="text-sm text-muted-foreground space-y-1">
                                     {sponsor.campaignIdeas.map((idea, index) => (
                                       <li key={index} className="flex items-start gap-2">
@@ -587,8 +627,8 @@ export default function TrackingPage() {
                               <div className="border-t pt-4">
                                 <div className="flex items-center justify-between mb-3">
                                   <h4 className="font-medium flex items-center gap-2">
-                                    <Bot className="h-4 w-4" />
-                                    AI Pitch Materials
+                                    <Bot className="h-4 w-4 flex-shrink-0" />
+                                    {t("aiPitchMaterials")}
                                   </h4>
                                   <Button
                                     onClick={() => generatePitch(sponsor)}
@@ -597,13 +637,13 @@ export default function TrackingPage() {
                                   >
                                     {generatingPitch[sponsor.id] ? (
                                       <>
-                                        <Zap className="h-3 w-3 mr-2 animate-spin" />
-                                        Generating...
+                                        <Zap className="h-3 w-3 mr-2 animate-spin flex-shrink-0" />
+                                        {t("generating")}
                                       </>
                                     ) : (
                                       <>
-                                        <FileText className="h-3 w-3 mr-2" />
-                                        Generate Pitch
+                                        <FileText className="h-3 w-3 mr-2 flex-shrink-0" />
+                                        {t("generatePitch")}
                                       </>
                                     )}
                                   </Button>
@@ -612,17 +652,17 @@ export default function TrackingPage() {
                                 {pitchMaterials[sponsor.id] && (
                                   <div className="space-y-3">
                                     <div className="bg-primary/5 p-3 rounded-lg">
-                                      <h5 className="font-medium text-sm mb-2">Email Subject</h5>
+                                      <h5 className="font-medium text-sm mb-2">{t("emailSubject")}</h5>
                                       <p className="text-sm">{pitchMaterials[sponsor.id].emailSubject}</p>
                                     </div>
                                     <div className="bg-primary/5 p-3 rounded-lg">
-                                      <h5 className="font-medium text-sm mb-2">Pitch Email</h5>
+                                      <h5 className="font-medium text-sm mb-2">{t("pitchEmail")}</h5>
                                       <div className="text-sm whitespace-pre-wrap">
                                         {pitchMaterials[sponsor.id].pitchEmail}
                                       </div>
                                     </div>
                                     <div className="bg-primary/5 p-3 rounded-lg">
-                                      <h5 className="font-medium text-sm mb-2">Key Talking Points</h5>
+                                      <h5 className="font-medium text-sm mb-2">{t("keyTalkingPoints")}</h5>
                                       <ul className="text-sm space-y-1">
                                         {pitchMaterials[sponsor.id].talkingPoints?.map(
                                           (point: string, index: number) => (
@@ -630,7 +670,7 @@ export default function TrackingPage() {
                                               <span className="text-primary">•</span>
                                               {point}
                                             </li>
-                                          ),
+                                          )
                                         )}
                                       </ul>
                                     </div>
@@ -650,5 +690,5 @@ export default function TrackingPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

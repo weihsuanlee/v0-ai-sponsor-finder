@@ -10,6 +10,12 @@ export const translations = {
   en: {
     // Navigation
     backToHome: "Back to Home",
+    backToResults: "Back to Results",
+    goToTracking: "Go to Tracking",
+    viewSponsorRecommendations: "View Sponsor Recommendations",
+    companyDetails: "Company Details",
+    contactInformation: "Contact Information",
+    industryLabel: "Industry",
 
     // Hero Section
     heroTitle: "Connect Your Sports Club with Perfect Sponsors",
@@ -53,26 +59,73 @@ export const translations = {
     recommendedIndustries: "Recommended Industries",
     potentialSponsors: "Potential Sponsors",
     matchesFound: "matches found",
+    noClubDataError: "No club data found. Please fill out the form first.",
+    sponsorGenerationError: "Failed to generate sponsor recommendations. Please try again.",
+
+    // Tracking
+    trackingTitle: "Sponsor Tracking Board",
+    trackingSubtitleDesktop: "Drag and drop sponsors to update their status",
+    trackingSubtitleMobile: "Manage your sponsor outreach pipeline",
+    trackingEmptyTitle: "No Sponsors Tracked Yet",
+    trackingEmptyDescription: "Start by adding sponsors from your results page to track your outreach progress.",
+    filterAll: "All",
+    trackingFilterShowing: "Showing",
+    trackingFilterSponsorsWithStatus: "sponsors with status",
+    statusNotContacted: "Not Contacted",
+    statusContacted: "Contacted",
+    statusInDiscussion: "In Discussion",
+    statusRejected: "Rejected",
+    statusApproved: "Approved",
+    statusLabel: "Status:",
 
     // Sponsor Card
     whyTheyWouldSponsor: "Why they'd sponsor you:",
+    targetAudienceLabel: "Target Audience",
+    campaignIdeas: "Campaign Ideas",
+    exampleCampaignIdea: "Example Campaign Idea",
     website: "Website",
     email: "Email",
+    contact: "Contact",
+    visitWebsite: "Visit Website",
+    sendEmail: "Send Email",
+    callNow: "Call Now",
     aiPitchMaterials: "AI Pitch Materials",
     generatePitchMaterials: "Generate Pitch Materials",
+    generatePitch: "Generate Pitch",
     generatedIn: "Generated in",
     regenerate: "Regenerate",
+    generating: "Generating...",
     emailSubject: "Email Subject",
     emailBody: "Email Body",
+    pitchEmail: "Pitch Email",
     partnershipSlogan: "Partnership Slogan",
     keyBenefits: "Key Benefits for Sponsor",
+    keyTalkingPoints: "Key Talking Points",
     collaborationIdeas: "Collaboration Ideas",
     callToAction: "Call to Action",
+    viewDetails: "View Details",
+    viewDetailsAndGenerate: "View Details & Generate Pitch",
+    alreadyTracked: "Already added to tracking",
+    addToTracking: "Add to tracking",
+    addedToTracking: "Added",
+    campaignIdeaTechnology: "Tech Innovation Showcase - Feature your products at our tech-savvy events",
+    campaignIdeaFood: "Game Day Fuel Partnership - Provide refreshments for players and fans",
+    campaignIdeaAutomotive: "Victory Lap Sponsorship - Brand vehicles at championship celebrations",
+    campaignIdeaHealthcare: "Wellness Champions Program - Promote health and fitness initiatives",
+    campaignIdeaFinance: "Financial Fitness Campaign - Educate athletes on financial planning",
+    campaignIdeaRetail: "Fan Gear Collaboration - Co-branded merchandise and exclusive discounts",
+    campaignIdeaSports: "Performance Partnership - Provide equipment and training gear",
+    campaignIdeaEducation: "Scholar Athlete Program - Support academic excellence initiatives",
+    campaignIdeaDefault: "Custom Partnership Campaign - Tailored collaboration opportunities",
 
     // Demographics
     clubDemographicsOverview: "Club Demographics Overview",
     ageDistribution: "Age Distribution",
     additionalClubInfo: "Additional Club Information",
+    competitionLevelLabel: "Level",
+    male: "Male",
+    female: "Female",
+    other: "Other",
 
     // Footer
     footerText: "© 2024 AI Sponsor Finder. Connecting sports clubs with perfect sponsors through intelligent matching.",
@@ -112,6 +165,12 @@ export const translations = {
   fr: {
     // Navigation
     backToHome: "Retour à l'accueil",
+    backToResults: "Retour aux résultats",
+    goToTracking: "Aller au suivi",
+    viewSponsorRecommendations: "Voir les recommandations de sponsors",
+    companyDetails: "Informations sur l'entreprise",
+    contactInformation: "Informations de contact",
+    industryLabel: "Industrie",
 
     // Hero Section
     heroTitle: "Connectez votre club sportif avec des sponsors parfaits",
@@ -156,26 +215,74 @@ export const translations = {
     recommendedIndustries: "Industries recommandées",
     potentialSponsors: "Sponsors potentiels",
     matchesFound: "correspondances trouvées",
+    noClubDataError: "Aucune donnée de club trouvée. Veuillez d'abord remplir le formulaire.",
+    sponsorGenerationError: "Impossible de générer des recommandations de sponsors. Veuillez réessayer.",
+
+    // Tracking
+    trackingTitle: "Tableau de suivi des sponsors",
+    trackingSubtitleDesktop: "Glissez-déposez les sponsors pour mettre à jour leur statut",
+    trackingSubtitleMobile: "Gérez votre pipeline de prospection sponsors",
+    trackingEmptyTitle: "Aucun sponsor suivi pour le moment",
+    trackingEmptyDescription: "Ajoutez des sponsors depuis la page de résultats pour suivre votre progression.",
+    filterAll: "Tous",
+    trackingFilterShowing: "Affichage de",
+    trackingFilterSponsorsWithStatus: "sponsors avec le statut",
+    statusNotContacted: "Pas contacté",
+    statusContacted: "Contacté",
+    statusInDiscussion: "En discussion",
+    statusRejected: "Refusé",
+    statusApproved: "Approuvé",
+    statusLabel: "Statut :",
 
     // Sponsor Card
     whyTheyWouldSponsor: "Pourquoi ils vous sponsoriseraient :",
+    targetAudienceLabel: "Public cible",
+    campaignIdeas: "Idées de campagne",
+    exampleCampaignIdea: "Exemple d'idée de campagne",
     website: "Site web",
     email: "Email",
+    contact: "Contact",
+    visitWebsite: "Visiter le site web",
+    sendEmail: "Envoyer un email",
+    callNow: "Appeler maintenant",
     aiPitchMaterials: "Supports de présentation IA",
     generatePitchMaterials: "Générer les supports de présentation",
+    generatePitch: "Générer un pitch",
     generatedIn: "Généré en",
     regenerate: "Régénérer",
+    generating: "Génération...",
     emailSubject: "Objet de l'email",
     emailBody: "Corps de l'email",
+    pitchEmail: "Email de pitch",
     partnershipSlogan: "Slogan du partenariat",
     keyBenefits: "Avantages clés pour le sponsor",
+    keyTalkingPoints: "Points clés",
     collaborationIdeas: "Idées de collaboration",
     callToAction: "Appel à l'action",
+    viewDetails: "Voir les détails",
+    viewDetailsAndGenerate: "Voir les détails et générer un pitch",
+    alreadyTracked: "Déjà ajouté au suivi",
+    addToTracking: "Ajouter au suivi",
+    addedToTracking: "Ajouté",
+    campaignIdeaTechnology:
+      "Vitrine d'innovation technologique - Mettez vos produits en avant lors de nos événements orientés tech",
+    campaignIdeaFood: "Partenariat énergie jour de match - Fournissez des rafraîchissements aux joueurs et supporters",
+    campaignIdeaAutomotive: "Sponsoring tour d'honneur - Brandissez des véhicules lors des célébrations",
+    campaignIdeaHealthcare: "Programme champions du bien-être - Promouvez la santé et le fitness",
+    campaignIdeaFinance: "Campagne forme financière - Sensibilisez les athlètes à la gestion financière",
+    campaignIdeaRetail: "Collaboration merchandising fans - Produits co-marqués et remises exclusives",
+    campaignIdeaSports: "Partenariat performance - Fournissez équipements et matériel d'entraînement",
+    campaignIdeaEducation: "Programme athlète-étudiant - Soutenez les initiatives académiques",
+    campaignIdeaDefault: "Campagne de partenariat sur mesure - Opportunités de collaboration personnalisées",
 
     // Demographics
     clubDemographicsOverview: "Aperçu démographique du club",
     ageDistribution: "Répartition par âge",
     additionalClubInfo: "Informations supplémentaires sur le club",
+    competitionLevelLabel: "Niveau",
+    male: "Hommes",
+    female: "Femmes",
+    other: "Autres",
 
     // Footer
     footerText:
@@ -216,6 +323,12 @@ export const translations = {
   de: {
     // Navigation
     backToHome: "Zurück zur Startseite",
+    backToResults: "Zurück zu den Ergebnissen",
+    goToTracking: "Zur Nachverfolgung",
+    viewSponsorRecommendations: "Sponsor-Empfehlungen anzeigen",
+    companyDetails: "Unternehmensdetails",
+    contactInformation: "Kontaktinformationen",
+    industryLabel: "Branche",
 
     // Hero Section
     heroTitle: "Verbinden Sie Ihren Sportverein mit perfekten Sponsoren",
@@ -260,26 +373,74 @@ export const translations = {
     recommendedIndustries: "Empfohlene Branchen",
     potentialSponsors: "Potenzielle Sponsoren",
     matchesFound: "Übereinstimmungen gefunden",
+    noClubDataError: "Keine Clubdaten gefunden. Bitte füllen Sie zuerst das Formular aus.",
+    sponsorGenerationError: "Sponsor-Empfehlungen konnten nicht erstellt werden. Bitte erneut versuchen.",
+
+    // Tracking
+    trackingTitle: "Sponsor-Tracking-Board",
+    trackingSubtitleDesktop: "Ziehen Sie Sponsoren per Drag & Drop, um ihren Status zu aktualisieren",
+    trackingSubtitleMobile: "Verwalten Sie Ihre Sponsoren-Pipeline",
+    trackingEmptyTitle: "Noch keine Sponsoren verfolgt",
+    trackingEmptyDescription: "Fügen Sie Sponsoren von der Ergebnisseite hinzu, um Ihren Fortschritt zu verfolgen.",
+    filterAll: "Alle",
+    trackingFilterShowing: "Angezeigt",
+    trackingFilterSponsorsWithStatus: "Sponsoren mit Status",
+    statusNotContacted: "Nicht kontaktiert",
+    statusContacted: "Kontaktiert",
+    statusInDiscussion: "In Gespräch",
+    statusRejected: "Abgelehnt",
+    statusApproved: "Genehmigt",
+    statusLabel: "Status:",
 
     // Sponsor Card
     whyTheyWouldSponsor: "Warum sie Sie sponsern würden:",
+    targetAudienceLabel: "Zielgruppe",
+    campaignIdeas: "Kampagnenideen",
+    exampleCampaignIdea: "Beispielhafte Kampagnenidee",
     website: "Website",
     email: "E-Mail",
+    contact: "Kontakt",
+    visitWebsite: "Website besuchen",
+    sendEmail: "E-Mail senden",
+    callNow: "Jetzt anrufen",
     aiPitchMaterials: "KI-Präsentationsmaterialien",
     generatePitchMaterials: "Präsentationsmaterialien generieren",
+    generatePitch: "Pitch generieren",
     generatedIn: "Generiert in",
     regenerate: "Neu generieren",
+    generating: "Wird erstellt...",
     emailSubject: "E-Mail-Betreff",
     emailBody: "E-Mail-Text",
+    pitchEmail: "Pitch-E-Mail",
     partnershipSlogan: "Partnerschafts-Slogan",
     keyBenefits: "Hauptvorteile für Sponsor",
+    keyTalkingPoints: "Wesentliche Gesprächspunkte",
     collaborationIdeas: "Kooperationsideen",
     callToAction: "Handlungsaufforderung",
+    viewDetails: "Details anzeigen",
+    viewDetailsAndGenerate: "Details anzeigen & Pitch generieren",
+    alreadyTracked: "Bereits im Tracking",
+    addToTracking: "Zum Tracking hinzufügen",
+    addedToTracking: "Hinzugefügt",
+    campaignIdeaTechnology:
+      "Tech-Innovationsshowcase – Präsentieren Sie Ihre Produkte bei unseren technikaffinen Events",
+    campaignIdeaFood: "Matchday-Fuel-Partnerschaft – Versorgen Sie Spieler und Fans mit Verpflegung",
+    campaignIdeaAutomotive: "Victory-Lap-Sponsoring – Fahrzeugbranding bei Siegesfeiern",
+    campaignIdeaHealthcare: "Wellness-Champions-Programm – Gesundheits- und Fitnessinitiativen unterstützen",
+    campaignIdeaFinance: "Financial-Fitness-Kampagne – Athleten in Finanzplanung schulen",
+    campaignIdeaRetail: "Fanwear-Kollaboration – Co-Branding von Merchandise und exklusive Rabatte",
+    campaignIdeaSports: "Performance-Partnerschaft – Ausrüstung und Trainingsmaterial bereitstellen",
+    campaignIdeaEducation: "Scholar-Athlete-Programm – Akademische Initiativen fördern",
+    campaignIdeaDefault: "Individuelle Partnerschaftskampagne – Maßgeschneiderte Kooperationsmöglichkeiten",
 
     // Demographics
     clubDemographicsOverview: "Vereinsdemografie-Übersicht",
     ageDistribution: "Altersverteilung",
     additionalClubInfo: "Zusätzliche Vereinsinformationen",
+    competitionLevelLabel: "Niveau",
+    male: "Männer",
+    female: "Frauen",
+    other: "Andere",
 
     // Footer
     footerText:
@@ -318,9 +479,11 @@ export const translations = {
   },
 } as const
 
+export type TranslationKey = keyof typeof translations.en
+
 export function useTranslation(language: Language = "en") {
   return {
-    t: (key: keyof typeof translations.en): string => {
+    t: (key: TranslationKey): string => {
       return translations[language][key] || translations.en[key] || key
     },
     language,

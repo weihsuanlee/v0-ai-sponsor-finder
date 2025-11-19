@@ -8,13 +8,14 @@ import { ArrowRight, Target, Zap, Globe, BarChart3, Bot } from "lucide-react"
 import ClubInfoForm from "@/components/club-info-form"
 import LanguageSelector from "@/components/language-selector"
 import UserSetup from "@/components/user-setup"
-import { useTranslation, type Language } from "@/lib/i18n"
+import { useTranslation } from "@/lib/i18n"
 import { UserStorage } from "@/lib/user-storage"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { useStoredLanguage } from "@/lib/language"
 
 export default function HomePage() {
-  const [language, setLanguage] = useState<Language>("en")
+  const [language, setLanguage] = useStoredLanguage("en")
   const [currentUser, setCurrentUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const { t } = useTranslation(language)

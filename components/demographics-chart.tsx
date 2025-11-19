@@ -5,12 +5,15 @@ import { Badge } from "@/components/ui/badge"
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { MapPin, Users, Calendar, Scale } from "lucide-react"
 import type { ClubData } from "@/lib/types"
+import { useTranslation, type Language } from "@/lib/i18n"
 
 interface DemographicsChartProps {
   clubData: ClubData
+  language: Language
 }
 
-export default function DemographicsChart({ clubData }: DemographicsChartProps) {
+export default function DemographicsChart({ clubData, language }: DemographicsChartProps) {
+  const { t } = useTranslation(language)
   const chartColors = [
     "oklch(0.5106 0.2301 276.9656)", // Primary purple
     "oklch(0.7038 0.1230 182.5025)", // Secondary teal
@@ -25,28 +28,28 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
     if (clubData.uploadedDemographics) {
       const { ageDistributionPercentages } = clubData.uploadedDemographics
       return [
-        { name: "Youth (6-17)", value: ageDistributionPercentages.youth, color: chartColors[0] },
-        { name: "Young Adult (18-25)", value: ageDistributionPercentages.youngAdult, color: chartColors[1] },
-        { name: "Adult (26-40)", value: ageDistributionPercentages.adult, color: chartColors[2] },
-        { name: "Senior (40+)", value: ageDistributionPercentages.senior, color: chartColors[3] },
+        { name: t("youth"), value: ageDistributionPercentages.youth, color: chartColors[0] },
+        { name: t("young-adult"), value: ageDistributionPercentages.youngAdult, color: chartColors[1] },
+        { name: t("adult"), value: ageDistributionPercentages.adult, color: chartColors[2] },
+        { name: t("senior"), value: ageDistributionPercentages.senior, color: chartColors[3] },
       ].filter((item) => item.value > 0) // Only show groups with members
     }
 
     // Fallback to estimated data
     const ageGroupMap: Record<string, { name: string; value: number; color: string }> = {
-      youth: { name: "Youth (6-17)", value: 35, color: chartColors[0] },
-      "young-adult": { name: "Young Adult (18-25)", value: 25, color: chartColors[1] },
-      adult: { name: "Adult (26-40)", value: 30, color: chartColors[2] },
-      senior: { name: "Senior (40+)", value: 10, color: chartColors[3] },
-      mixed: { name: "Mixed Ages", value: 100, color: chartColors[0] },
+      youth: { name: t("youth"), value: 35, color: chartColors[0] },
+      "young-adult": { name: t("young-adult"), value: 25, color: chartColors[1] },
+      adult: { name: t("adult"), value: 30, color: chartColors[2] },
+      senior: { name: t("senior"), value: 10, color: chartColors[3] },
+      mixed: { name: t("mixed"), value: 100, color: chartColors[0] },
     }
 
     if (clubData.ageGroups === "mixed") {
       return [
-        { name: "Youth (6-17)", value: 25, color: chartColors[0] },
-        { name: "Young Adult (18-25)", value: 30, color: chartColors[1] },
-        { name: "Adult (26-40)", value: 35, color: chartColors[2] },
-        { name: "Senior (40+)", value: 10, color: chartColors[3] },
+        { name: t("youth"), value: 25, color: chartColors[0] },
+        { name: t("young-adult"), value: 30, color: chartColors[1] },
+        { name: t("adult"), value: 35, color: chartColors[2] },
+        { name: t("senior"), value: 10, color: chartColors[3] },
       ]
     }
 
@@ -58,29 +61,29 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
     if (clubData.uploadedDemographics) {
       const { genderDistributionPercentages } = clubData.uploadedDemographics
       return [
-        { name: "Male", value: genderDistributionPercentages.male, color: chartColors[0] },
-        { name: "Female", value: genderDistributionPercentages.female, color: chartColors[1] },
-        { name: "Other", value: genderDistributionPercentages.other, color: chartColors[4] },
+        { name: t("male"), value: genderDistributionPercentages.male, color: chartColors[0] },
+        { name: t("female"), value: genderDistributionPercentages.female, color: chartColors[1] },
+        { name: t("other"), value: genderDistributionPercentages.other, color: chartColors[4] },
       ].filter((item) => item.value > 0) // Only show categories with members
     }
 
     // Fallback to estimated data
     const genderMap: Record<string, Array<{ name: string; value: number; color: string }>> = {
       "male-majority": [
-        { name: "Male", value: 75, color: chartColors[0] }, // Purple for male
-        { name: "Female", value: 25, color: chartColors[1] }, // Teal for female
+        { name: t("male"), value: 75, color: chartColors[0] }, // Purple for male
+        { name: t("female"), value: 25, color: chartColors[1] }, // Teal for female
       ],
       "female-majority": [
-        { name: "Female", value: 75, color: chartColors[1] }, // Teal for female
-        { name: "Male", value: 25, color: chartColors[0] }, // Purple for male
+        { name: t("female"), value: 75, color: chartColors[1] }, // Teal for female
+        { name: t("male"), value: 25, color: chartColors[0] }, // Purple for male
       ],
       balanced: [
-        { name: "Male", value: 50, color: chartColors[0] }, // Purple for male
-        { name: "Female", value: 50, color: chartColors[1] }, // Teal for female
+        { name: t("male"), value: 50, color: chartColors[0] }, // Purple for male
+        { name: t("female"), value: 50, color: chartColors[1] }, // Teal for female
       ],
       mixed: [
-        { name: "Male", value: 55, color: chartColors[0] }, // Purple for male
-        { name: "Female", value: 45, color: chartColors[1] }, // Teal for female
+        { name: t("male"), value: 55, color: chartColors[0] }, // Purple for male
+        { name: t("female"), value: 45, color: chartColors[1] }, // Teal for female
       ],
     }
 
@@ -116,8 +119,8 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
     <Card className="border-2 border-primary/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          Club Demographics Overview
+          <Users className="h-5 w-5 text-primary flex-shrink-0" />
+          {t("clubDemographicsOverview")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -126,22 +129,22 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20">
               <div className="text-2xl font-bold text-primary">{clubData.totalMembers}</div>
-              <div className="text-xs text-muted-foreground">Total Members</div>
+              <div className="text-xs text-muted-foreground">{t("totalMembers")}</div>
             </div>
             <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20">
               <div className="text-lg font-semibold capitalize text-primary">{clubData.sportType}</div>
-              <div className="text-xs text-muted-foreground">Sport</div>
+              <div className="text-xs text-muted-foreground">{t("sportType")}</div>
             </div>
             <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20 flex flex-col items-center">
               <Badge className={getCompetitionLevelColor()}>{clubData.competitionLevel}</Badge>
-              <div className="text-xs text-muted-foreground mt-1">Level</div>
+              <div className="text-xs text-muted-foreground mt-1">{t("competitionLevelLabel")}</div>
             </div>
             <div className="text-center p-3 bg-primary/5 rounded-lg border border-primary/20">
               <div className="flex items-center justify-center gap-1 text-sm">
-                <MapPin className="h-3 w-3 text-primary" />
+                <MapPin className="h-3 w-3 text-primary flex-shrink-0" />
                 <span className="truncate">{clubData.location}</span>
               </div>
-              <div className="text-xs text-muted-foreground">Location</div>
+              <div className="text-xs text-muted-foreground">{t("location")}</div>
             </div>
           </div>
 
@@ -150,8 +153,8 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
             {/* Age Groups Chart */}
             <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-4 rounded-lg border border-primary/10">
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
-                Age Distribution
+                <Calendar className="h-4 w-4 text-primary flex-shrink-0" />
+                {t("ageDistribution")}
               </h4>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
@@ -204,8 +207,8 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
             {/* Gender Distribution Chart */}
             <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-4 rounded-lg border border-primary/10">
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <Scale className="h-4 w-4 text-primary" />
-                Gender Distribution
+                <Scale className="h-4 w-4 text-primary flex-shrink-0" />
+                {t("genderDistribution")}
               </h4>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
@@ -250,8 +253,8 @@ export default function DemographicsChart({ clubData }: DemographicsChartProps) 
           {clubData.additionalInfo && (
             <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-4 rounded-lg border border-primary/20">
               <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                <Users className="h-4 w-4 text-primary" />
-                Additional Club Information
+                <Users className="h-4 w-4 text-primary flex-shrink-0" />
+                {t("additionalClubInfo")}
               </h4>
               <p className="text-sm text-muted-foreground">{clubData.additionalInfo}</p>
             </div>

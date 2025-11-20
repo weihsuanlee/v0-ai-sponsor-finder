@@ -43,8 +43,10 @@ export interface Sponsor {
   contactInfo: {
     website?: string
     email?: string
+    phone?: string
   }
   matchReason: string
+  campaignIdeas?: string[]
 }
 
 export interface SponsorsResponse {
@@ -133,4 +135,73 @@ export interface FileUploadResponse {
     sampleRows: any[]
     columnsDetected: string[]
   }
+}
+
+export type AgentStepType = "tool" | "analysis" | "summary"
+
+export interface AgentStep {
+  id: string
+  title: string
+  type: AgentStepType
+  content: string
+  metadata?: Record<string, string>
+}
+
+export interface AgentRecommendationResponse {
+  steps: AgentStep[]
+  sponsor: Sponsor
+}
+
+export interface SearchBusinessInfoResult {
+  query: string
+  name: string
+  website: string
+  title: string
+  snippet: string
+  description: string
+  categories: string[]
+  rawItems: Array<{
+    title: string
+    link: string
+    snippet: string
+  }>
+}
+
+export interface BusinessProfile {
+  industry: string
+  services: string
+  brandVoice: string
+  audience: string
+  geography: string
+  relevantNotes: string
+}
+
+export interface SponsorFitScore {
+  score: number
+  fitReasons: string[]
+  suggestedSponsorshipType: string
+}
+
+export interface AgentWorkflowLog {
+  id: string
+  message: string
+  status: "pending" | "success" | "error"
+  timestamp: string
+}
+
+export interface AgentTrackingPayload {
+  sponsor: Sponsor
+  score: number
+  notes: string
+  generatedAt: string
+  tags: string[]
+}
+
+export interface AgentEvaluationResult {
+  logs: AgentWorkflowLog[]
+  businessInfo: SearchBusinessInfoResult
+  profile: BusinessProfile
+  fit: SponsorFitScore
+  finalSummary: string
+  trackingPayload: AgentTrackingPayload
 }

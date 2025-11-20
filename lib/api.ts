@@ -1,4 +1,11 @@
-import type { ClubData, SponsorsResponse, PitchContent, Sponsor, Language } from "./types"
+import type {
+  ClubData,
+  SponsorsResponse,
+  PitchContent,
+  Sponsor,
+  Language,
+  AgentEvaluationResult,
+} from "./types"
 
 export async function generateSponsors(clubData: ClubData): Promise<SponsorsResponse> {
   const response = await fetch("/api/generate-sponsors", {
@@ -65,4 +72,27 @@ export async function generatePitchMaterials(
     pitchEmail: data.emailBody,
     talkingPoints: data.keyBenefits || [],
   }
+}
+
+export async function evaluateBusinessWithAgent(
+  businessName: string,
+  clubData: ClubData,
+  language: Language = "en",
+): Promise<AgentEvaluationResult> {
+  const response = await fetch("/api/agent/evaluate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ businessName, clubProfile: clubData, language }),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: "Failed to analyze company" }))
+    const err = new Error(errorData.error || "Failed to analyze company")
+    ;(err as any).logs = errorData.logs
+    throw err
+  }
+
+  return response.json()
 }

@@ -30,25 +30,15 @@ export async function searchBusinessInfo(query: string): Promise<SearchBusinessI
   }
 
   const primary = items[0];
-
-  console.log({
-    query,
-    name: primary.title ?? query,
-    website: primary.link ?? "",
-    title: primary.title ?? "",
-    snippet: primary.snippet ?? "",
-    description: primary.snippet ?? "",
-    categories:
-      data.context?.facets
-        ?.flat()
-        ?.map((facet: any) => facet.anchor)
-        .filter(Boolean) ?? [],
-    rawItems: items.map((item) => ({
-      title: item.title ?? "",
-      link: item.link ?? "",
-      snippet: item.snippet ?? "",
-    })),
-  });
+  const rawFacets = ((data.context?.facets && Array.isArray(data.context.facets) ? data.context.facets : []) as Array<
+    Array<{ anchor?: string }>
+  >).flat();
+  const categories = rawFacets.map((facet) => facet?.anchor).filter((value): value is string => Boolean(value));
+  const normalizedItems = items.map((item) => ({
+    title: item.title ?? "",
+    link: item.link ?? "",
+    snippet: item.snippet ?? "",
+  }));
 
   return {
     query,
@@ -57,15 +47,7 @@ export async function searchBusinessInfo(query: string): Promise<SearchBusinessI
     title: primary.title ?? "",
     snippet: primary.snippet ?? "",
     description: primary.snippet ?? "",
-    categories:
-      data.context?.facets
-        ?.flat()
-        ?.map((facet: any) => facet.anchor)
-        .filter(Boolean) ?? [],
-    rawItems: items.map((item) => ({
-      title: item.title ?? "",
-      link: item.link ?? "",
-      snippet: item.snippet ?? "",
-    })),
+    categories,
+    rawItems: normalizedItems,
   };
 }

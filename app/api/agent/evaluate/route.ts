@@ -15,6 +15,7 @@ import { searchBusinessInfo } from "@/lib/tools/searchBusinessInfo";
 import { extractBusinessProfile } from "@/lib/tools/extractBusinessProfile";
 import { scoreSponsorFit } from "@/lib/tools/scoreSponsorFit";
 import { translations } from "@/lib/i18n";
+import { extractCompanyInfoFromUrl } from "@/lib/tools/extractFromUrl";
 
 type RequestPayload = {
   businessName: string;
@@ -29,12 +30,30 @@ const ensureLanguage = (value?: string): Language => {
   return "en";
 };
 
+const detectInputUrl = (value: string): string | null => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  const hasProtocol = /^https?:\/\//i.test(trimmed);
+  const looksLikeDomain = /^[\w.-]+\.[a-z]{2,}(?:\/.*)?$/i.test(trimmed);
+  if (!hasProtocol && !looksLikeDomain) {
+    return null;
+  }
+  try {
+    const normalized = new URL(hasProtocol ? trimmed : `https://${trimmed}`);
+    return normalized.toString();
+  } catch {
+    return null;
+  }
+};
+
 const controller = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || "",
 });
 
 const controllerSchema = z.object({
-  action: z.enum(["searchBusinessInfo", "extractBusinessProfile", "scoreSponsorFit", "done"]),
+  action: z.enum(["extractFromUrl", "searchBusinessInfo", "extractBusinessProfile", "scoreSponsorFit", "done"]),
 });
 
 const createLog = (message: string, status: AgentWorkflowLog["status"]): AgentWorkflowLog => ({
@@ -86,14 +105,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: locale.agentProvideCompanyError }, { status: 400 });
     }
 
+    const trimmedInput = businessName.trim();
+    const inputUrl = detectInputUrl(trimmedInput);
+    const hasInputUrl = Boolean(inputUrl);
+
     logs.push(createLog(locale.agentLogReasoning, "success"));
 
-    let searchResult: SearchBusinessInfoResult | null = null;
+    let companyInfo: SearchBusinessInfoResult | null = null;
     let profile: BusinessProfile | null = null;
     let fit: ReturnType<typeof scoreSponsorFit> | null = null;
+    let searchUsed = false;
+    let extractionUsed = false;
+    let knownWebsite: string | null = inputUrl;
+    const actionHistory = new Set<string>();
+    const maxControllerSteps = 5;
 
     const actionToLabel = (action: string) => {
       switch (action) {
+        case "extractFromUrl":
+          return locale.agentActionExtractFromUrl;
         case "searchBusinessInfo":
           return locale.agentActionSearch;
         case "extractBusinessProfile":
@@ -106,9 +136,13 @@ export async function POST(request: Request) {
       }
     };
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < maxControllerSteps; i++) {
       logs.push(createLog(locale.agentLogThinking, "pending"));
       const thinkingLog = logs[logs.length - 1];
+
+      const searchAllowed = !searchUsed && !hasInputUrl && !companyInfo;
+      const extractionUrl = !extractionUsed ? knownWebsite : null;
+      const extractionAvailable = Boolean(extractionUrl);
 
       const { object } = await generateObject({
         model: controller("gemini-2.5-flash"),
@@ -117,42 +151,86 @@ export async function POST(request: Request) {
 You are a controller deciding the next action for the Smart Sponsor Evaluator.
 Return strict JSON with the "action" field.
 
-State:
-businessName: ${businessName}
-clubProfile: ${JSON.stringify(clubProfile)}
-searchResult: ${searchResult ? JSON.stringify({ name: searchResult.name, website: searchResult.website }) : "null"}
-profile: ${profile ? JSON.stringify(profile) : "null"}
-fit: ${fit ? JSON.stringify(fit) : "null"}
+Guidelines:
+- Use "extractFromUrl" to pull content from a website URL when available. This MUST be your first step when inputUrlProvided is true and companyInfo is missing.
+- Use "searchBusinessInfo" only when searchAllowed is "yes".
+- Each tool may be used at most once.
+- Use "extractBusinessProfile" only after companyInfo exists.
+- Use "scoreSponsorFit" only after the profile exists.
+- Choose "done" only when companyInfo, profile, and fit are already available.
 
-Decide the next step. Use "done" only when searchResult, profile, and fit are all available.`,
+State:
+userInput: ${trimmedInput}
+inputUrlProvided: ${hasInputUrl}
+knownWebsite: ${knownWebsite ?? "unknown"}
+searchAllowed: ${searchAllowed ? "yes" : "no"}
+extractionAvailable: ${extractionAvailable ? "yes" : "no"}
+companyInfo: ${companyInfo ? JSON.stringify({ name: companyInfo.name, website: companyInfo.website }) : "missing"}
+profile: ${profile ? JSON.stringify(profile) : "missing"}
+fit: ${fit ? JSON.stringify({ score: fit.score }) : "missing"}
+actionsTaken: ${JSON.stringify(Array.from(actionHistory))}
+        `,
       });
 
       thinkingLog.status = "success";
 
-      const action = object.action;
+      let action = object.action;
+
+      if (hasInputUrl && !companyInfo && !extractionUsed && action !== "extractFromUrl") {
+        action = "extractFromUrl";
+      }
+
       const actionMessage = locale.agentLogControllerDecision.replace("{action}", actionToLabel(action));
       logs.push(createLog(actionMessage, "success"));
 
       if (action === "done") {
-        if (!searchResult || !profile || !fit) {
+        if (!companyInfo || !profile || !fit) {
           throw new Error("Controller exited before all data was collected.");
         }
         break;
       }
 
+      if (actionHistory.has(action)) {
+        throw new Error(`Controller attempted to repeat action: ${action}`);
+      }
+      actionHistory.add(action);
+
+      if (action === "extractFromUrl") {
+        if (!extractionAvailable || !extractionUrl) {
+          throw new Error("Controller requested website extraction without an available URL.");
+        }
+        logs.push(createLog(locale.agentLogExtractingWebsite, "pending"));
+        const extractionLog = logs[logs.length - 1];
+        companyInfo = await extractCompanyInfoFromUrl(extractionUrl);
+        extractionLog.status = "success";
+        logs.push(createLog(locale.agentLogWebsiteExtractionDone, "success"));
+        extractionUsed = true;
+        knownWebsite = extractionUrl;
+        continue;
+      }
+
       if (action === "searchBusinessInfo") {
+        if (hasInputUrl) {
+          throw new Error("Search is disabled when a URL is provided by the user.");
+        }
+        if (!searchAllowed) {
+          throw new Error("Search is not available at this point in the workflow.");
+        }
         logs.push(createLog(locale.agentLogSearch, "pending"));
-        searchResult = await searchBusinessInfo(`${businessName} official site ${clubProfile.location ?? ""}`);
+        companyInfo = await searchBusinessInfo(`${trimmedInput} official site ${clubProfile.location ?? ""}`);
+        knownWebsite = companyInfo.website || knownWebsite;
         logs[logs.length - 1].status = "success";
+        searchUsed = true;
         continue;
       }
 
       if (action === "extractBusinessProfile") {
-        if (!searchResult) {
-          throw new Error("Controller requested profile extraction before search results were available.");
+        if (!companyInfo) {
+          throw new Error("Controller requested profile extraction before company information was available.");
         }
+        const resolvedName = companyInfo.name?.trim() || trimmedInput;
         logs.push(createLog(locale.agentLogProfile, "pending"));
-        profile = extractBusinessProfile(businessName, searchResult);
+        profile = extractBusinessProfile(resolvedName, companyInfo);
         logs[logs.length - 1].status = "success";
         continue;
       }
@@ -168,13 +246,15 @@ Decide the next step. Use "done" only when searchResult, profile, and fit are al
       }
     }
 
-    if (!searchResult || !profile || !fit) {
-      throw new Error("Unable to complete evaluation after multiple attempts.");
+    if (!companyInfo || !profile || !fit) {
+      throw new Error("Unable to complete evaluation with the available actions.");
     }
 
+    const resolvedBusinessName = companyInfo.name?.trim() || trimmedInput;
+
     const sponsor = buildSponsorFromProfile(
-      businessName.trim(),
-      searchResult,
+      resolvedBusinessName,
+      companyInfo,
       profile,
       fit.fitReasons[0] || "Values and audience alignment"
     );
@@ -182,7 +262,7 @@ Decide the next step. Use "done" only when searchResult, profile, and fit are al
     logs.push(createLog(locale.agentLogSummary, "success"));
 
     const summary = locale.agentFinalSummary
-      .replace("{business}", businessName)
+      .replace("{business}", resolvedBusinessName)
       .replace("{score}", fit.score.toString())
       .replace("{type}", fit.suggestedSponsorshipType);
 
@@ -196,7 +276,7 @@ Decide the next step. Use "done" only when searchResult, profile, and fit are al
 
     const result: AgentEvaluationResult = {
       logs,
-      businessInfo: searchResult,
+      businessInfo: companyInfo,
       profile,
       fit,
       finalSummary: summary,

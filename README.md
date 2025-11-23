@@ -10,9 +10,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Google Gemini](https://img.shields.io/badge/Google-Gemini%20AI-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
 
-[Live Demo](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder) • [Report Bug](https://github.com/yourusername/v0-ai-sponsor-finder/issues) • [Request Feature](https://github.com/yourusername/v0-ai-sponsor-finder/issues)
+[Live Demo](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)
 
 </div>
+
+### 🚀 Try It Now
+
+Experience AI Sponsor Finder live: **[Launch the Demo](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)**.
 
 ---
 
@@ -28,7 +32,6 @@
   - [Running Locally](#running-locally)
 - [Testing (Built with Codex)](#testing-built-with-codex)
 - [Project Structure](#project-structure)
-- [AI Collaboration with Codex](#ai-collaboration-with-codex)
 - [Future Enhancements](#future-enhancements)
 
 ---
@@ -37,7 +40,7 @@
 
 **AI Sponsor Finder** is an intelligent web application that revolutionizes how sports clubs connect with potential sponsors. By leveraging AI-powered demographic analysis and natural language generation, it matches clubs with relevant sponsors and automatically generates personalized pitch materials in multiple languages.
 
-> The repo now ships with a dedicated **Codex integration**. Codex implements new features (like the dark/light theme), keeps the documentation current, adds automated tests, and performs code reviews on pull requests to safeguard quality.
+The latest build now includes a **Smart Sponsor Evaluator agent**: paste a company URL or name and the controller LLM decides, step by step, whether to parse the website, run a search, extract a profile, or score sponsor fit—surfacing a fully explainable workflow along the way.
 
 ### The Problem It Solves
 
@@ -76,26 +79,18 @@ This application creates value for all stakeholders:
 
 ## Key Features
 
-### 🎯 Smart Sponsor Matching
+### 🧠 Smart Sponsor Evaluator Agent
 
-- **AI-Powered Analysis**: Analyzes club demographics (age distribution, gender split, location, sport type) to identify compatible sponsors
-- **Industry Recommendations**: Suggests relevant sponsorship industries based on club profile
-- **Match Reasoning**: Explains why each sponsor would be a good fit for your specific club
+- **URL or Name Input**: Paste a company website or type its name—the evaluator auto-detects URLs, prioritizes them as the ground truth, and still supports traditional search when no link is provided.
+- **Adaptive Controller Loop**: A Gemini-powered controller inspects state after every step, then decides which capability to trigger next—website understanding, business info search, profile extraction, fit scoring, or finishing—never following a fixed sequence.
+- **Single-Pass Decisions**: Each capability runs at most once, eliminating brittle retry loops while keeping the workflow transparent.
+- **Insightful Logs**: Localized timeline surfaces each controller decision (“Extract company website”, “Score sponsor fit”, etc.) so club managers can see exactly how the recommendation came together before adding it to tracking.
 
-![Smart Sponsor Matching](./docs/screenshots/sponsor-matching.png)
-_AI analyzes your club demographics to find perfectly matched sponsors_
+![Smart Sponsor Evaluator (Company Input)](./docs/screenshots/smart-evaluator-company.png)
+_Controller walks through search, profile extraction, and fit scoring for a typed-in company_
 
-### 📊 CSV/Excel Member Data Upload
-
-- **Bulk Import**: Upload member data files (.csv, .xlsx, .xls) up to 5MB
-- **Automatic Extraction**: Intelligently parses age, gender, and demographic data
-- **Smart Mapping**: Handles flexible column names and formats
-- **Age Calculation**: Automatically calculates ages from dates of birth
-- **Auto-Fill Forms**: Populates club demographics from uploaded data
-- **Data Preview**: Review parsed data before submission
-
-![CSV Upload Feature](./docs/screenshots/csv-upload.png)
-_Upload member data and automatically extract demographics_
+![Smart Sponsor Evaluator (Website Input)](./docs/screenshots/smart-evaluator-url.png)
+_URL-first run shows the agent extracting the site, building the profile, then finishing in one pass_
 
 ### 🤖 AI-Generated Pitch Materials
 
@@ -108,6 +103,15 @@ _Upload member data and automatically extract demographics_
 ![AI Pitch Generation](./docs/screenshots/pitch-generation.png)
 _Generate professional pitch materials instantly with AI_
 
+### 🎯 Precision Sponsor Intelligence
+
+- **Audience Alignment**: Analyzes club demographics (age distribution, gender split, location, sport type) to identify compatible sponsors.
+- **Industry Recommendations**: Suggests relevant sponsorship industries based on club profile.
+- **Transparent Reasoning**: Explains why each sponsor would be a good fit for your specific club.
+
+![Precision Sponsor Intelligence](./docs/screenshots/sponsor-matching.png)
+_AI analyzes your club demographics to find perfectly matched sponsors_
+
 ### 🌍 Multi-Language Support
 
 - **Three Languages**: English, French, and German
@@ -117,6 +121,18 @@ _Generate professional pitch materials instantly with AI_
 
 ![Multi-Language Support](./docs/screenshots/multi-language.png)
 _Create pitch materials in English, French, or German_
+
+### 📊 CSV/Excel Member Data Upload
+
+- **Bulk Import**: Upload member data files (.csv, .xlsx, .xls) up to 5MB
+- **Automatic Extraction**: Intelligently parses age, gender, and demographic data
+- **Smart Mapping**: Handles flexible column names and formats
+- **Age Calculation**: Automatically calculates ages from dates of birth
+- **Auto-Fill Forms**: Populates club demographics from uploaded data
+- **Data Preview**: Review parsed data before submission
+
+![CSV Upload Feature](./docs/screenshots/csv-upload.png)
+_Upload member data and automatically extract demographics_
 
 ### 📈 Kanban-Style Tracking Board
 
@@ -136,13 +152,14 @@ _Manage your sponsor outreach pipeline with drag-and-drop tracking_
 - **Data Privacy**: All data stays on your device
 - **Fast Performance**: Instant load times with no server calls
 
-> **Note**: Screenshots are located in `./docs/screenshots/` directory. Add your own screenshots by placing images in this folder and they will be displayed automatically.
-
-### 🌓 Codex-Powered Dark/Light Theme
+### 🌓 Dark/Light Theme
 
 - **Header Toggle**: Codex added the next-themes integration and UI toggle so users can switch instantly.
 - **Accessible Colors**: Hover/focus states are tuned for contrast in both palettes.
 - **Consistency**: All buttons inherit pointer/hover styles globally for a predictable feel.
+
+![Dark Theme](./docs/screenshots/dark-theme.png)
+_Theme toggle keeps buttons, cards, and typography consistent across palettes_
 
 ---
 
@@ -258,11 +275,11 @@ npm run lint
 
 Codex added an automated testing stack that covers the core business logic, CSV parsing, and the most important UI flow.
 
-| Layer | Tooling | Command | What It Covers |
-| --- | --- | --- | --- |
-| Unit | [Vitest](https://vitest.dev/) | `npm run test:unit` | `lib/user-storage` behaviors such as session persistence and duplicate avoidance |
-| Integration | Vitest | `npm run test:integration` | `lib/member-data-parser` end-to-end parsing of messy CSV fields |
-| End-to-End | [Playwright](https://playwright.dev/) | `npm run test:e2e` | Launches the Next.js dev server, loads the homepage, and verifies CTA/theme toggle flows |
+| Layer       | Tooling                               | Command                    | What It Covers                                                                           |
+| ----------- | ------------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
+| Unit        | [Vitest](https://vitest.dev/)         | `npm run test:unit`        | `lib/user-storage` behaviors such as session persistence and duplicate avoidance         |
+| Integration | Vitest                                | `npm run test:integration` | `lib/member-data-parser` end-to-end parsing of messy CSV fields                          |
+| End-to-End  | [Playwright](https://playwright.dev/) | `npm run test:e2e`         | Launches the Next.js dev server, loads the homepage, and verifies CTA/theme toggle flows |
 
 > All three suites live under `tests/` and were implemented by Codex. Playwright automatically boots the dev server defined in `playwright.config.ts`, so no manual prep work is required.
 
@@ -274,6 +291,7 @@ Codex added an automated testing stack that covers the core business logic, CSV 
 ai-sponsor-finder/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # API routes
+│   │   ├── agent/evaluate/       # Smart Sponsor Evaluator controller
 │   │   ├── generate-sponsors/    # Mock sponsor generation
 │   │   ├── generate-pitch/       # AI pitch generation (Gemini)
 │   │   ├── upload-members/       # CSV/Excel upload & parsing
@@ -311,6 +329,7 @@ ai-sponsor-finder/
 ### Key Files
 
 - **`app/api/generate-pitch/route.ts`** - AI pitch generation using Google Gemini with structured output
+- **`app/api/agent/evaluate/route.ts`** - Controller-based Smart Sponsor Evaluator agent that orchestrates search, website understanding, profile building, and fit scoring
 - **`lib/member-data-parser.ts`** - Flexible CSV/Excel parsing with demographic extraction
 - **`lib/i18n.ts`** - Complete translation system for 3 languages
 - **`lib/user-storage.ts`** - LocalStorage abstraction for state management
@@ -333,17 +352,9 @@ ai-sponsor-finder/
 
 ### Codex Feature + Quality Pass
 
-- Codex now acts as the resident collaborator—implementing the dark/light theme toggle, refining hover/contrast states, and adding the automation described below.
-- Delivered the Vitest + Playwright test suites and keeps reviewing pull requests to maintain quality as the project grows.
-
----
-
-## AI Collaboration with Codex
-
-- **Embedded Copilot**: Codex is wired into this repo (see `CLAUDE.md`) and is used for day-to-day implementation tasks.
-- **Dark/Light Theme**: The header toggle, hover fixes, and theme provider integration were fully delivered by Codex.
-- **Automated Code Review**: Every pull request is routed through Codex for a fast QA/code-review pass before merging.
-- **Test Suite**: The Vitest + Playwright setup, along with the initial specs under `tests/`, were planned and implemented by Codex.
+- Codex drove the Smart Sponsor Evaluator upgrade—URL-aware inputs, the controller prompt rewrite, localized workflow logging, and the end-to-end website-intelligence pipeline that turns any public page into structured sponsor data.
+- Rounded out the experience with UI polish (input helper copy, consistent skeleton styling) and keeps the documentation current whenever new capabilities land.
+- Owns the Vitest + Playwright stack and acts as the built-in reviewer: every pull request receives a Codex QA/code-review pass before merge, keeping quality bars high without slowing the team down.
 
 ---
 

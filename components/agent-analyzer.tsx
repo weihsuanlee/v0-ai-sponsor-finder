@@ -111,14 +111,17 @@ export default function AgentAnalyzer({ clubData, language }: AgentAnalyzerProps
         </DialogHeader>
 
         <form onSubmit={handleAnalyze} className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Input
-              placeholder={t("agentInputPlaceholder")}
-              value={companyName}
-              onChange={(event) => setCompanyName(event.target.value)}
-              className="flex-1"
-            />
-            <Button type="submit" disabled={isRunning}>
+          <div className="flex flex-col gap-3 md:flex-row md:items-end">
+            <div className="flex-1 space-y-1">
+              <Input
+                placeholder={t("agentInputPlaceholder")}
+                value={companyName}
+                onChange={(event) => setCompanyName(event.target.value)}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground">{t("agentInputHelper")}</p>
+            </div>
+            <Button type="submit" disabled={isRunning} className="md:w-auto w-full">
               {isRunning ? (
                 <>
                   <Sparkles className="h-4 w-4 mr-2 animate-spin" />

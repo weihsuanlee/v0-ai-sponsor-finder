@@ -82,8 +82,8 @@ export default function ResultsPage() {
         {/* Header */}
         <header className="border-b bg-card/50">
           <div className="max-w-7xl mx-auto px-4 py-6">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex-1">
                 <Link
                   href="/"
                   className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2 cursor-pointer transition-colors"
@@ -96,7 +96,7 @@ export default function ResultsPage() {
                   {clubData ? `${t("sponsorRecommendations")} ${clubData.clubName}` : t("sponsorRecommendations")}
                 </h1>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <Link href="/tracking">
                   <Button variant="outline" className="cursor-pointer hover:bg-accent transition-colors bg-transparent">
                     <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0" />

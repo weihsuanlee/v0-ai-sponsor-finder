@@ -83,7 +83,8 @@ export const translations = {
     agentDialogTitle: "Smart Sponsor Evaluator",
     agentDialogDescription:
       "Research a potential sponsor, evaluate fit, and send the result to your tracking list when ready.",
-    agentInputPlaceholder: "Company or brand name",
+    agentInputPlaceholder: "Company or website URL",
+    agentInputHelper: "Paste a company website or enter a name to evaluate sponsor fit.",
     agentAnalyze: "Analyze",
     agentRunning: "Running",
     agentProvideCompanyError: "Provide a company or brand name to analyze.",
@@ -103,11 +104,14 @@ export const translations = {
     agentLogReasoning: "🧠 Starting agent reasoning…",
     agentLogSearch: "🔍 Searching business info…",
     agentLogProfile: "📑 Extracting business profile…",
+    agentLogExtractingWebsite: "🌐 Extracting company information from website…",
+    agentLogWebsiteExtractionDone: "✅ Website extraction completed",
     agentLogFit: "📊 Evaluating sponsor fit…",
     agentLogSummary: "🧠 Finalizing agent summary…",
     agentLogFailurePrefix: "⚠️ Agent failed",
     agentLogThinking: "🤖 Thinking… deciding next step",
     agentLogControllerDecision: "Controller selected: {action}",
+    agentActionExtractFromUrl: "Extract company website",
     agentActionSearch: "searchBusinessInfo",
     agentActionProfile: "extractBusinessProfile",
     agentActionFit: "scoreSponsorFit",
@@ -165,7 +169,7 @@ export const translations = {
     other: "Other",
 
     // Footer
-    footerText: "© 2024 AI Sponsor Finder. Connecting sports clubs with perfect sponsors through intelligent matching.",
+    footerText: "© 2025 AI Sponsor Finder. Connecting sports clubs with perfect sponsors through intelligent matching.",
 
     // Sports
     football: "Football/Soccer",
@@ -276,7 +280,8 @@ export const translations = {
     agentDialogTitle: "Évaluateur de sponsors intelligent",
     agentDialogDescription:
       "Analysez un partenaire potentiel, évaluez l'adéquation et ajoutez le résultat à votre tableau de suivi.",
-    agentInputPlaceholder: "Nom d'entreprise ou de marque",
+    agentInputPlaceholder: "Nom d'entreprise ou URL du site",
+    agentInputHelper: "Collez le site d'une entreprise ou entrez un nom pour évaluer l'adéquation.",
     agentAnalyze: "Analyser",
     agentRunning: "Analyse en cours",
     agentProvideCompanyError: "Indiquez une entreprise ou une marque à analyser.",
@@ -296,11 +301,14 @@ export const translations = {
     agentLogReasoning: "🧠 Démarrage du raisonnement de l'agent…",
     agentLogSearch: "🔍 Recherche d'informations sur l'entreprise…",
     agentLogProfile: "📑 Extraction du profil de l'entreprise…",
+    agentLogExtractingWebsite: "🌐 Extraction des informations du site web…",
+    agentLogWebsiteExtractionDone: "✅ Extraction du site web terminée",
     agentLogFit: "📊 Évaluation de l'adéquation…",
     agentLogSummary: "🧠 Finalisation du résumé…",
     agentLogFailurePrefix: "⚠️ L'agent a échoué",
     agentLogThinking: "🤖 Réflexion… décision de l'étape suivante",
     agentLogControllerDecision: "Contrôleur sélectionné : {action}",
+    agentActionExtractFromUrl: "Extraire le site de l'entreprise",
     agentActionSearch: "searchBusinessInfo",
     agentActionProfile: "extractBusinessProfile",
     agentActionFit: "scoreSponsorFit",
@@ -360,7 +368,7 @@ export const translations = {
 
     // Footer
     footerText:
-      "© 2024 AI Sponsor Finder. Connecter les clubs sportifs avec des sponsors parfaits grâce au matching intelligent.",
+      "© 2025 AI Sponsor Finder. Connecter les clubs sportifs avec des sponsors parfaits grâce au matching intelligent.",
 
     // Sports
     football: "Football",
@@ -471,7 +479,8 @@ export const translations = {
     agentDialogTitle: "Intelligenter Sponsor-Bewerter",
     agentDialogDescription:
       "Recherchiere ein mögliches Unternehmen, bewerte die Eignung und füge das Ergebnis deinem Tracking hinzu.",
-    agentInputPlaceholder: "Unternehmens- oder Markenname",
+    agentInputPlaceholder: "Unternehmen oder Website-URL",
+    agentInputHelper: "Füge eine Firmenwebsite ein oder gib einen Namen ein, um die Eignung zu prüfen.",
     agentAnalyze: "Analysieren",
     agentRunning: "Analyse läuft",
     agentProvideCompanyError: "Bitte gib ein Unternehmen oder eine Marke zur Analyse ein.",
@@ -491,11 +500,14 @@ export const translations = {
     agentLogReasoning: "🧠 Agenten-Überlegung gestartet…",
     agentLogSearch: "🔍 Suche nach Unternehmensinfos…",
     agentLogProfile: "📑 Unternehmensprofil wird extrahiert…",
+    agentLogExtractingWebsite: "🌐 Unternehmensinformationen von der Website werden extrahiert…",
+    agentLogWebsiteExtractionDone: "✅ Website-Extraktion abgeschlossen",
     agentLogFit: "📊 Sponsoren-Fit wird bewertet…",
     agentLogSummary: "🧠 Zusammenfassung wird erstellt…",
     agentLogFailurePrefix: "⚠️ Agent fehlgeschlagen",
     agentLogThinking: "🤖 Denke nach… wähle nächsten Schritt",
     agentLogControllerDecision: "Controller hat ausgewählt: {action}",
+    agentActionExtractFromUrl: "Unternehmenswebsite extrahieren",
     agentActionSearch: "searchBusinessInfo",
     agentActionProfile: "extractBusinessProfile",
     agentActionFit: "scoreSponsorFit",
@@ -555,7 +567,7 @@ export const translations = {
 
     // Footer
     footerText:
-      "© 2024 AI Sponsor Finder. Sportvereine mit perfekten Sponsoren durch intelligentes Matching verbinden.",
+      "© 2025 AI Sponsor Finder. Sportvereine mit perfekten Sponsoren durch intelligentes Matching verbinden.",
 
     // Sports
     football: "Fußball",

@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Copy,
   Globe,
@@ -34,60 +34,60 @@ import {
   Phone,
   Sparkles,
   RefreshCw,
-} from "lucide-react"
-import type { Sponsor, ClubData, PitchContent, Language } from "@/lib/types"
-import { generatePitch } from "@/lib/api"
-import { UserStorage } from "@/lib/user-storage"
-import { useTranslation, languages, type TranslationKey } from "@/lib/i18n"
+} from "lucide-react";
+import type { Sponsor, ClubData, PitchContent, Language } from "@/lib/types";
+import { generatePitch } from "@/lib/api";
+import { UserStorage } from "@/lib/user-storage";
+import { useTranslation, languages, type TranslationKey } from "@/lib/i18n";
 
 interface SponsorCardProps {
-  sponsor: Sponsor
-  clubData: ClubData
-  language: Language
+  sponsor: Sponsor;
+  clubData: ClubData;
+  language: Language;
 }
 
 export default function SponsorCard({ sponsor, clubData, language }: SponsorCardProps) {
-  const { t } = useTranslation(language)
-  const [pitchContent, setPitchContent] = useState<PitchContent | null>(null)
-  const [isGeneratingPitch, setIsGeneratingPitch] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>(language)
-  const [copiedField, setCopiedField] = useState<string | null>(null)
-  const [isTracked, setIsTracked] = useState(false)
+  const { t } = useTranslation(language);
+  const [pitchContent, setPitchContent] = useState<PitchContent | null>(null);
+  const [isGeneratingPitch, setIsGeneratingPitch] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [isTracked, setIsTracked] = useState(false);
 
   useEffect(() => {
-    const tracked = UserStorage.isSponsorTracked(sponsor.name)
-    setIsTracked(tracked)
-  }, [sponsor.name])
+    const tracked = UserStorage.isSponsorTracked(sponsor.name);
+    setIsTracked(tracked);
+  }, [sponsor.name]);
 
   useEffect(() => {
-    setSelectedLanguage(language)
-  }, [language])
+    setSelectedLanguage(language);
+  }, [language]);
 
   const handleGeneratePitch = async (language: Language = "en") => {
-    setIsGeneratingPitch(true)
+    setIsGeneratingPitch(true);
     try {
-      const pitch = await generatePitch(clubData, sponsor, language)
-      setPitchContent(pitch)
-      setSelectedLanguage(language)
+      const pitch = await generatePitch(clubData, sponsor, language);
+      setPitchContent(pitch);
+      setSelectedLanguage(language);
     } catch (error) {
-      console.error("Error generating pitch:", error)
+      console.error("Error generating pitch:", error);
     } finally {
-      setIsGeneratingPitch(false)
+      setIsGeneratingPitch(false);
     }
-  }
+  };
 
   const handleCopyToClipboard = async (text: string, fieldName: string) => {
     try {
-      await navigator.clipboard.writeText(text)
-      setCopiedField(fieldName)
-      setTimeout(() => setCopiedField(null), 2000)
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldName);
+      setTimeout(() => setCopiedField(null), 2000);
     } catch (error) {
-      console.error("Failed to copy to clipboard:", error)
+      console.error("Failed to copy to clipboard:", error);
     }
-  }
+  };
 
   const handleTrackSponsor = () => {
-    if (isTracked) return
+    if (isTracked) return;
 
     const sponsorWithStatus = {
       ...sponsor,
@@ -95,38 +95,38 @@ export default function SponsorCard({ sponsor, clubData, language }: SponsorCard
       status: "Not Contacted" as const,
       dateAdded: new Date().toISOString(),
       clubData: clubData,
-    }
+    };
 
-    const success = UserStorage.addTrackedSponsor(sponsorWithStatus)
+    const success = UserStorage.addTrackedSponsor(sponsorWithStatus);
     if (success) {
-      setIsTracked(true)
+      setIsTracked(true);
     }
-  }
+  };
 
-  const languageLabels = languages
+  const languageLabels = languages;
 
   const getIndustryIcon = (industry: string) => {
     switch (industry) {
       case "Technology":
-        return <Monitor className="h-6 w-6 flex-shrink-0" />
+        return <Monitor className="h-6 w-6 flex-shrink-0" />;
       case "Food & Beverage":
-        return <Coffee className="h-6 w-6 flex-shrink-0" />
+        return <Coffee className="h-6 w-6 flex-shrink-0" />;
       case "Automotive":
-        return <Car className="h-6 w-6 flex-shrink-0" />
+        return <Car className="h-6 w-6 flex-shrink-0" />;
       case "Healthcare":
-        return <Heart className="h-6 w-6 flex-shrink-0" />
+        return <Heart className="h-6 w-6 flex-shrink-0" />;
       case "Finance":
-        return <DollarSign className="h-6 w-6 flex-shrink-0" />
+        return <DollarSign className="h-6 w-6 flex-shrink-0" />;
       case "Retail":
-        return <ShoppingBag className="h-6 w-6 flex-shrink-0" />
+        return <ShoppingBag className="h-6 w-6 flex-shrink-0" />;
       case "Sports Equipment":
-        return <Dumbbell className="h-6 w-6 flex-shrink-0" />
+        return <Dumbbell className="h-6 w-6 flex-shrink-0" />;
       case "Education":
-        return <GraduationCap className="h-6 w-6 flex-shrink-0" />
+        return <GraduationCap className="h-6 w-6 flex-shrink-0" />;
       default:
-        return <Building2 className="h-6 w-6 flex-shrink-0" />
+        return <Building2 className="h-6 w-6 flex-shrink-0" />;
     }
-  }
+  };
 
   const campaignIdeaKeys: Record<string, TranslationKey> = {
     Technology: "campaignIdeaTechnology",
@@ -137,12 +137,12 @@ export default function SponsorCard({ sponsor, clubData, language }: SponsorCard
     Retail: "campaignIdeaRetail",
     "Sports Equipment": "campaignIdeaSports",
     Education: "campaignIdeaEducation",
-  }
+  };
 
   const generateCampaignIdea = (sponsor: Sponsor) => {
-    const key = campaignIdeaKeys[sponsor.industry] ?? "campaignIdeaDefault"
-    return t(key)
-  }
+    const key = campaignIdeaKeys[sponsor.industry] ?? "campaignIdeaDefault";
+    return t(key);
+  };
 
   return (
     <Card className="h-fit hover:shadow-lg transition-all duration-200 border-2 hover:border-primary/20">
@@ -160,25 +160,25 @@ export default function SponsorCard({ sponsor, clubData, language }: SponsorCard
             </div>
           </div>
           <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleTrackSponsor}
-            className={`h-8 w-8 p-0 transition-colors ${
-              isTracked ? "cursor-default text-primary" : "cursor-pointer hover:bg-accent"
-            }`}
-            disabled={isTracked}
-            title={isTracked ? t("alreadyTracked") : t("addToTracking")}
-          >
-            {isTracked ? (
-              <BookmarkCheck className="h-4 w-4 text-primary flex-shrink-0" />
-            ) : (
-              <Bookmark className="h-4 w-4 flex-shrink-0" />
-            )}
-          </Button>
-          {isTracked && <span className="text-xs text-primary font-medium">{t("addedToTracking")}</span>}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleTrackSponsor}
+              className={`h-8 w-8 p-0 transition-colors ${
+                isTracked ? "cursor-default text-primary" : "cursor-pointer hover:bg-accent"
+              }`}
+              disabled={isTracked}
+              title={isTracked ? t("alreadyTracked") : t("addToTracking")}
+            >
+              {isTracked ? (
+                <BookmarkCheck className="h-4 w-4 text-primary flex-shrink-0" />
+              ) : (
+                <Bookmark className="h-4 w-4 flex-shrink-0" />
+              )}
+            </Button>
+            {isTracked && <span className="text-xs text-primary font-medium">{t("addedToTracking")}</span>}
+          </div>
         </div>
-      </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -277,9 +277,9 @@ export default function SponsorCard({ sponsor, clubData, language }: SponsorCard
 
           {isGeneratingPitch && (
             <div className="space-y-3">
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-8 w-full bg-gray-200 dark:bg-gray-800" />
+              <Skeleton className="h-20 w-full bg-gray-200 dark:bg-gray-800" />
+              <Skeleton className="h-16 w-full bg-gray-200 dark:bg-gray-800" />
             </div>
           )}
 
@@ -422,9 +422,9 @@ export default function SponsorCard({ sponsor, clubData, language }: SponsorCard
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function Label({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`text-xs font-medium text-muted-foreground ${className}`}>{children}</div>
+  return <div className={`text-xs font-medium text-muted-foreground ${className}`}>{children}</div>;
 }

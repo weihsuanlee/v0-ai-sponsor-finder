@@ -169,7 +169,7 @@ export const translations = {
     other: "Other",
 
     // Footer
-    footerText: "© 2024 AI Sponsor Finder. Connecting sports clubs with perfect sponsors through intelligent matching.",
+    footerText: "© 2025 AI Sponsor Finder. Connecting sports clubs with perfect sponsors through intelligent matching.",
 
     // Sports
     football: "Football/Soccer",
@@ -368,7 +368,7 @@ export const translations = {
 
     // Footer
     footerText:
-      "© 2024 AI Sponsor Finder. Connecter les clubs sportifs avec des sponsors parfaits grâce au matching intelligent.",
+      "© 2025 AI Sponsor Finder. Connecter les clubs sportifs avec des sponsors parfaits grâce au matching intelligent.",
 
     // Sports
     football: "Football",
@@ -567,7 +567,7 @@ export const translations = {
 
     // Footer
     footerText:
-      "© 2024 AI Sponsor Finder. Sportvereine mit perfekten Sponsoren durch intelligentes Matching verbinden.",
+      "© 2025 AI Sponsor Finder. Sportvereine mit perfekten Sponsoren durch intelligentes Matching verbinden.",
 
     // Sports
     football: "Fußball",

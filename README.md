@@ -79,6 +79,28 @@ This application creates value for all stakeholders:
 
 ## Key Features
 
+### 📝 Guided Club Onboarding
+
+- **Intuitive Form Inputs**: Capture club name, sport, demographics, and outreach goals through a clean multi-section form with inline hints.
+- **CSV/Excel Import**: Upload up to 5MB of roster data; the parser auto-detects headers, calculates ages, and aggregates gender splits.
+- **Smart Defaults**: Parsed insights flow directly into the form so clubs can tweak and submit within seconds.
+- **Review & Confirm**: Preview the extracted stats before committing them to the profile.
+
+![Club Onboarding Form](./docs/screenshots/club-onboarding.png)
+_Guided form collects every detail needed to personalize sponsor matches_
+
+![CSV Upload Feature](./docs/screenshots/csv-upload.png)
+_Drop in a spreadsheet and instantly convert member data into demographics_
+
+### 🎯 Precision Sponsor Intelligence
+
+- **Audience Alignment**: Analyzes club demographics (age distribution, gender split, location, sport type) to identify compatible sponsors.
+- **Industry Recommendations**: Suggests relevant sponsorship industries based on club profile.
+- **Transparent Reasoning**: Explains why each sponsor would be a good fit for your specific club.
+
+![Precision Sponsor Intelligence](./docs/screenshots/sponsor-matching.png)
+_AI analyzes your club demographics to find perfectly matched sponsors_
+
 ### 🧠 Smart Sponsor Evaluator Agent
 
 - **URL or Name Input**: Paste a company website or type its name—the evaluator auto-detects URLs, prioritizes them as the ground truth, and still supports traditional search when no link is provided.
@@ -103,15 +125,6 @@ _URL-first run shows the agent extracting the site, building the profile, then f
 ![AI Pitch Generation](./docs/screenshots/pitch-generation.png)
 _Generate professional pitch materials instantly with AI_
 
-### 🎯 Precision Sponsor Intelligence
-
-- **Audience Alignment**: Analyzes club demographics (age distribution, gender split, location, sport type) to identify compatible sponsors.
-- **Industry Recommendations**: Suggests relevant sponsorship industries based on club profile.
-- **Transparent Reasoning**: Explains why each sponsor would be a good fit for your specific club.
-
-![Precision Sponsor Intelligence](./docs/screenshots/sponsor-matching.png)
-_AI analyzes your club demographics to find perfectly matched sponsors_
-
 ### 🌍 Multi-Language Support
 
 - **Three Languages**: English, French, and German
@@ -121,18 +134,6 @@ _AI analyzes your club demographics to find perfectly matched sponsors_
 
 ![Multi-Language Support](./docs/screenshots/multi-language.png)
 _Create pitch materials in English, French, or German_
-
-### 📊 CSV/Excel Member Data Upload
-
-- **Bulk Import**: Upload member data files (.csv, .xlsx, .xls) up to 5MB
-- **Automatic Extraction**: Intelligently parses age, gender, and demographic data
-- **Smart Mapping**: Handles flexible column names and formats
-- **Age Calculation**: Automatically calculates ages from dates of birth
-- **Auto-Fill Forms**: Populates club demographics from uploaded data
-- **Data Preview**: Review parsed data before submission
-
-![CSV Upload Feature](./docs/screenshots/csv-upload.png)
-_Upload member data and automatically extract demographics_
 
 ### 📈 Kanban-Style Tracking Board
 
@@ -145,20 +146,15 @@ _Upload member data and automatically extract demographics_
 ![Kanban Tracking Board](./docs/screenshots/tracking-board.png)
 _Manage your sponsor outreach pipeline with drag-and-drop tracking_
 
-### 💾 LocalStorage-Based Persistence
+> **Screenshot Tip**: Drop your own images into `./docs/screenshots/` and update the file names above to showcase real data.
 
-- **No Backend Required**: Fully client-side data storage
-- **User Sessions**: Maintain multiple user profiles
-- **Data Privacy**: All data stays on your device
-- **Fast Performance**: Instant load times with no server calls
-
-### 🌓 Dark/Light Theme
+### 🌓 Codex-Powered Dark/Light Theme
 
 - **Header Toggle**: Codex added the next-themes integration and UI toggle so users can switch instantly.
 - **Accessible Colors**: Hover/focus states are tuned for contrast in both palettes.
 - **Consistency**: All buttons inherit pointer/hover styles globally for a predictable feel.
 
-![Dark Theme](./docs/screenshots/dark-theme.png)
+![Dark vs Light Theme](./docs/screenshots/dark-theme.png)
 _Theme toggle keeps buttons, cards, and typography consistent across palettes_
 
 ---
@@ -231,13 +227,17 @@ Before you begin, ensure you have the following installed:
    cp .env.example .env.local
    ```
 
-2. **Add your Google API key**
+2. **Add required API keys**
 
    ```env
-   GOOGLE_GENERATIVE_AI_API_KEY=your_api_key_here
+   GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_key
+   GOOGLE_CSE_API_KEY=your_google_custom_search_key
+   GOOGLE_CSE_ID=your_custom_search_engine_id
    ```
 
-   > **Getting an API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey) to generate a free API key for Gemini models.
+   > **Where to get them?**
+   > - Gemini key: [Google AI Studio](https://makersuite.google.com/app/apikey)
+   > - Custom Search key + CX: Create a Programmable Search Engine under your Google Cloud project and copy the API key + Search Engine ID.
 
 3. **Verify configuration** (optional)
    ```bash

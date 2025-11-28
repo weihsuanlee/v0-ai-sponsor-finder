@@ -75,6 +75,9 @@ This application creates value for all stakeholders:
    - Discover opportunities matching their target demographics
    - Build authentic community relationships
 
+![Three-Win Solution](./docs/screenshots/three-win.png)
+_Visual summary showing how clubs, platforms, and sponsors each benefit from the same workflow_
+
 ---
 
 ## Key Features
@@ -146,9 +149,8 @@ _Create pitch materials in English, French, or German_
 ![Kanban Tracking Board](./docs/screenshots/tracking-board.png)
 _Manage your sponsor outreach pipeline with drag-and-drop tracking_
 
-> **Screenshot Tip**: Drop your own images into `./docs/screenshots/` and update the file names above to showcase real data.
 
-### 🌓 Codex-Powered Dark/Light Theme
+### 🌓 Dark/Light Theme
 
 - **Header Toggle**: Codex added the next-themes integration and UI toggle so users can switch instantly.
 - **Accessible Colors**: Hover/focus states are tuned for contrast in both palettes.

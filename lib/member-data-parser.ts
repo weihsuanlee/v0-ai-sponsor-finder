@@ -1,10 +1,43 @@
 import type { MemberDataRow, ParsedMemberData } from "./types"
 
+const AGE_COLUMN_NAMES = [
+  "age",
+  "member_age",
+  "memberage",
+  "athlete_age",
+  "player_age",
+  "age_years",
+  "age(years)",
+  "ageyears",
+]
+
+const DOB_COLUMN_NAMES = [
+  "dateofbirth",
+  "date_of_birth",
+  "dob",
+  "birthdate",
+  "birth_date",
+  "birthday",
+  "birthyear",
+  "birth_year",
+  "yearofbirth",
+  "year_of_birth",
+]
+
+const GENDER_COLUMN_NAMES = [
+  "gender",
+  "sex",
+  "genderidentity",
+  "gender_identity",
+  "gender/sex",
+  "player_gender",
+  "athlete_gender",
+]
+
 /**
  * Calculate age from date of birth string
  */
-function calculateAge(dateString: string): number {
-  const birthDate = new Date(dateString)
+function calculateAge(birthDate: Date): number {
   const today = new Date()
   let age = today.getFullYear() - birthDate.getFullYear()
   const monthDiff = today.getMonth() - birthDate.getMonth()
@@ -15,12 +48,42 @@ function calculateAge(dateString: string): number {
 
   return age
 }
+function parseExcelDate(value: number): Date | null {
+  if (!Number.isFinite(value)) return null
+  const excelEpoch = new Date(Date.UTC(1899, 11, 30))
+  const ms = value * 24 * 60 * 60 * 1000
+  return new Date(excelEpoch.getTime() + ms)
+}
+
+function toDateValue(value: unknown): Date | null {
+  if (value === undefined || value === null || value === "") {
+    return null
+  }
+
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value
+  }
+
+  if (typeof value === "number") {
+    const excelDate = parseExcelDate(value)
+    if (excelDate && !Number.isNaN(excelDate.getTime())) {
+      return excelDate
+    }
+  }
+
+  const parsed = new Date(String(value))
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed
+  }
+
+  return null
+}
 
 /**
  * Normalize column name for flexible matching
  */
 function normalizeColumnName(columnName: string): string {
-  return columnName.toLowerCase().trim().replace(/[_\s-]/g, "")
+  return columnName.toLowerCase().trim().replace(/[^a-z0-9]/g, "")
 }
 
 /**
@@ -50,7 +113,7 @@ function findColumnValue(row: MemberDataRow, possibleNames: string[]): any {
  */
 function extractAge(row: MemberDataRow): number | null {
   // Try age column first
-  const ageValue = findColumnValue(row, ["age", "Age", "AGE", "member_age", "memberAge"])
+  const ageValue = findColumnValue(row, AGE_COLUMN_NAMES)
 
   if (ageValue !== undefined && ageValue !== null && ageValue !== "") {
     const age = typeof ageValue === "number" ? ageValue : Number.parseInt(String(ageValue), 10)
@@ -60,19 +123,15 @@ function extractAge(row: MemberDataRow): number | null {
   }
 
   // Try date of birth
-  const dobValue = findColumnValue(row, [
-    "dateofbirth",
-    "date_of_birth",
-    "dob",
-    "DOB",
-    "birthdate",
-    "birth_date",
-  ])
+  const dobValue = findColumnValue(row, DOB_COLUMN_NAMES)
 
   if (dobValue) {
-    const age = calculateAge(String(dobValue))
-    if (!Number.isNaN(age) && age > 0 && age < 120) {
-      return age
+    const birthDate = toDateValue(dobValue)
+    if (birthDate) {
+      const age = calculateAge(birthDate)
+      if (!Number.isNaN(age) && age > 0 && age < 120) {
+        return age
+      }
     }
   }
 
@@ -83,7 +142,7 @@ function extractAge(row: MemberDataRow): number | null {
  * Extract gender from a row
  */
 function extractGender(row: MemberDataRow): string {
-  const genderValue = findColumnValue(row, ["gender", "Gender", "GENDER", "sex", "Sex"])
+  const genderValue = findColumnValue(row, GENDER_COLUMN_NAMES)
 
   if (genderValue === undefined || genderValue === null || genderValue === "") {
     return "other"
@@ -91,10 +150,10 @@ function extractGender(row: MemberDataRow): string {
 
   const gender = String(genderValue).toLowerCase().trim()
 
-  if (gender.startsWith("m") || gender === "male") {
+  if (/^(m|male|man|men)$/i.test(gender)) {
     return "male"
   }
-  if (gender.startsWith("f") || gender === "female") {
+  if (/^(f|female|woman|women)$/i.test(gender)) {
     return "female"
   }
 

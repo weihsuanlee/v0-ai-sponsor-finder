@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Target, BarChart3, Building2, Handshake } from "lucide-react";
+import { ArrowLeft, Target, BarChart3, Building2, Handshake, Loader2 } from "lucide-react";
 import Link from "next/link";
 import type { ClubData, SponsorsResponse } from "@/lib/types";
 import { generateSponsors } from "@/lib/api";
@@ -78,6 +78,15 @@ export default function ResultsPage() {
 
   return (
     <>
+      {isLoading && (
+        <div className="pointer-events-none fixed inset-0 z-40 bg-background/60 backdrop-blur-[2px] flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2 text-center">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-sm font-medium text-foreground">{t("resultsLoadingHeadline")}</p>
+            <p className="text-xs text-muted-foreground">{t("resultsLoadingSubhead")}</p>
+          </div>
+        </div>
+      )}
       <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="border-b bg-card/50">
@@ -123,7 +132,6 @@ export default function ResultsPage() {
                 </CardContent>
               </Card>
 
-              {/* Loading Sponsors */}
               <div className="grid lg:grid-cols-2 gap-6">
                 {[...Array(6)].map((_, i) => (
                   <Card key={i}>

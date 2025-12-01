@@ -4,19 +4,17 @@
 
 **Connect Sports Clubs with Perfect Sponsors Through Intelligent AI Matching**
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://v0-ai-sponsor-finder.vercel.app/)
 [![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/8JeRrcgC6Ed)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Google Gemini](https://img.shields.io/badge/Google-Gemini%20AI-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
 
-[Live Demo](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)
-
 </div>
 
 ### 🚀 Try It Now
 
-Experience AI Sponsor Finder live: **[Launch the Demo](https://vercel.com/weihsuanlees-projects/v0-ai-sponsor-finder)**.
+Experience AI Sponsor Finder live: **[Launch the Demo](https://v0-ai-sponsor-finder.vercel.app/)**.
 
 ---
 
@@ -40,7 +38,7 @@ Experience AI Sponsor Finder live: **[Launch the Demo](https://vercel.com/weihsu
 
 **AI Sponsor Finder** is an intelligent web application that revolutionizes how sports clubs connect with potential sponsors. By leveraging AI-powered demographic analysis and natural language generation, it matches clubs with relevant sponsors and automatically generates personalized pitch materials in multiple languages.
 
-The latest build now includes a **Smart Sponsor Evaluator agent**: paste a company URL or name and the controller LLM decides, step by step, whether to parse the website, run a search, extract a profile, or score sponsor fit—surfacing a fully explainable workflow along the way.
+The latest build now includes a **Smart Sponsor Evaluator agent**: paste a company URL or name and the controller LLM decides, step by step, whether to parse the website, run a search, extract a profile, or score sponsor fit—surfacing a fully explainable workflow along the way. It’s an opinionated concept rather than a full autonomous agent (no long-term memory or background jobs), but it demonstrates how tool-use and controller prompts can make sponsor research feel interactive.
 
 ### The Problem It Solves
 

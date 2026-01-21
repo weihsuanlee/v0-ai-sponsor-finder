@@ -191,7 +191,6 @@ _Theme toggle keeps buttons, cards, and typography consistent across palettes_
 ### Deployment
 
 - **[Vercel](https://vercel.com/)** - Hosting and deployment platform
-- **[v0.app](https://v0.app/)** - AI-assisted development platform
 
 ---
 
